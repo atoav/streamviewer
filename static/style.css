@@ -1,0 +1,15 @@
+body { 
+    width: 100%; 
+    height: 100%;
+    margin: 1em;
+    background-color: rgba(0,0,0,0.9);
+    color: rgba(255,255,255,0.9);
+}
+video, video-js { 
+    width: 100%; 
+    min-width: 100%; 
+}
+
+h1, h2, h3, h4, h5, h6, p, i {
+    color: rgba(255,255,255,0.9);
+}
