@@ -4,9 +4,9 @@ Before=nginx.service
 
 [Service]
 Type=simple
-User=wwwrun
+User=streamviewer
 WorkingDirectory=/srv/streamviewer
-ExecStart=/srv/streamviewer/env/bin/gunicorn streamviewe.server:app
+ExecStart=/srv/streamviewer/env/bin/gunicorn streamviewer.server:app
 Restart=always
 RestartSec=30
 PrivateDevices=yes

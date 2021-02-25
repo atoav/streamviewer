@@ -6,6 +6,9 @@ flask==1.1.2 \
     --hash=sha256:4efa1ae2d7c9865af48986de8aeb8504bf32c7f3d6fdc9353d34b21f4b127060
 flask-markdown==0.3 \
     --hash=sha256:d8c3f02545b395ad525b86760ad721a2c50efa3b8e602a8d486a1f47f68c6250
+gunicorn==20.0.4 \
+    --hash=sha256:cd4a810dd51bf497552cf3f863b575dabd73d6ad6a91075b65936b151cbf4f9c \
+    --hash=sha256:1904bb2b8a43658807108d59c3f3d56c2b6121a701161de0ddf9ad140073c626
 importlib-metadata==3.7.0; python_version < "3.8" \
     --hash=sha256:c6af5dbf1126cd959c4a8d8efd61d4d3c83bddb0459a17e554284a077574b614 \
     --hash=sha256:24499ffde1b80be08284100393955842be4a59c7c16bbf2738aad0e464a8e0aa
