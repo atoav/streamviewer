@@ -83,6 +83,22 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
+@app.route('/meta', methods = ['POST'])
+def meta():
+    """
+    List the streams
+    """
+    args = request.args
+    app.logger.info('Got args: {}'.format(", ".join([str(s) s for s in args])))
+
+    # 201 Created
+    return 201
+
+
+
+
+
+
 
 def list_streams():
     """
