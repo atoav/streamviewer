@@ -32,7 +32,7 @@
 	{% if display_description %}
 		<section class="description">
 			{# Read from static/description.md, can be deactivated in config.toml #}
-			{{ description|md }}
+			{{ description|markdown }}
 		</section>
 	{% endif %}
 {% endblock %}
