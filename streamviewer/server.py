@@ -35,9 +35,6 @@ app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOST
 
 
 
-
-
-
 @app.route('/streams/<streamkey>', methods = ['GET'])
 def stream(streamkey):
     """
@@ -96,5 +93,3 @@ def list_streams():
         return list(hls_path.glob('*.m3u8'))
     else:
         return []
-
-

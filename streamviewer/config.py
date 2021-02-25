@@ -389,7 +389,7 @@ def create_config():
     selection = config_directories[int(selection)]
 
     # Create the directory if it doesn't exist yet
-    selection.mkdir(mode=0o755, parents=True, exist_ok=True)
+    selection["path"].mkdir(mode=0o755, parents=True, exist_ok=True)
     config_path = Path("{}/{}".format(selection, "00-config.toml"))
 
     # If the 00-config.toml already exists, ask whether it shall be moved to 00-config.toml.old
