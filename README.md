@@ -7,6 +7,15 @@ Streamviewer is (as of now) mostly stateless, that means there is not database, 
 Maybe there will be a version with accounts (and LDAP support?) in the future, but who knows.
 
 
+## Todo
+
+- [ ] Try Out Flask socketio integration for realtime listing of current streams
+- [ ] Finetuning of example HLS configuration
+- [ ] Add Footer with link to repo
+- [ ] Option to predefine passwords per stream key in config
+- [ ] Option to prevent unrestricted usage without preconfigured stream key/password
+
+
 
 ## Nginx Setup
 
