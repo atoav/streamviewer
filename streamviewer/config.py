@@ -35,6 +35,9 @@ list_streams = true
 
 # Should a description be displayed on / or /streams?
 display_description = true
+
+# Maximum Number of streams
+max_streams = 100
 """
 
 # Config for the logger, there should be no need to make

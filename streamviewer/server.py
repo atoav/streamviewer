@@ -8,6 +8,7 @@ from flask import Flask, request, render_template, send_from_directory
 from flaskext.markdown import Markdown
 
 from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
+from .streams import Stream, StreamList
 
 
 # Initialization
@@ -32,6 +33,9 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = description.replace("[[[RTMP-APP-NAME]]]/", config["application"]["rtmp-app-name"])
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
+
+# Create a streamlist
+streamlist = Streamlist().set_max_streams(config["application"]["max_streams"])
 
 
 
@@ -83,7 +87,7 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
-@app.route('/on_publish', methods = ['GET', 'POST'])
+@app.route('/on_publish', methods = ['POST'])
 def on_publish():
     """
     Gets called by nginx rtmp module whenver a new stream is created
@@ -93,14 +97,20 @@ def on_publish():
     streamingkey = request.values.get("name")
     password = request.values.get("password")
     description = request.values.get("description")
-    app.logger.info('Got args: {}, {}, {}'.format(streamingkey, password, description))
-    app.logger.info('Host was: {}'.format(request.host))
+    app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
 
-    # 201 Created
-    return "Created", 201
+    stream = Stream().key(streamingkey).password(password).description(description)
+    if streamlist.add_stream(stream)
+        app.logger.info('Stream \"{}\" got added to Streamlist'.format(streamingkey))
+        # 201 Created
+        return "Created", 201
+    else:
+        app.logger.info('Stream \"{}\" got denied by Streamlist'.format(streamingkey))
+        return "Not Created", 409
 
 
-@app.route('/on_publish_done', methods = ['GET', 'POST'])
+
+@app.route('/on_publish_done', methods = ['POST'])
 def on_publish_done():
     """
     Gets called by nginx rtmp module whenever a stream is ended
@@ -108,8 +118,8 @@ def on_publish_done():
     if not request.host == "localhost":
         return "Only allowed from localhost", 403
     streamingkey = request.values.get("name")
-    app.logger.info('Got args: {}'.format(streamingkey))
-    app.logger.info('Host was: {}'.format(request.host))
+    app.logger.info('Existing RTMP stream \"{}\" ended'.format(streamingkey))
+    streamlist.remove_stream(streamingkey)
 
     return "Ok", 200
 
@@ -117,7 +127,13 @@ def on_publish_done():
 
 
 
-
+def stream_exists(streamkey) -> bool:
+    """
+    Return true when the stream 
+    """
+    active_streams = list_streams()
+    active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
+    return streamkey in active_streams
 
 
 def list_streams():
