@@ -29,7 +29,7 @@ def stream(streamkey):
     If there is a stream, display it, otherwise note that the stream is missing
     """
     app.logger.info('200, Access to /{}'.format(streamkey))
-    app.logger.debug("Looking for {}/{}.m3u8".format(hls_path,  streamkey))
+    app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
 
     # Strip potential trailing slashes
     streamkey = streamkey.rstrip("/")
@@ -43,7 +43,7 @@ def stream(streamkey):
         app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
         return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey)
     else:
-        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=hls_path, streamkey=streamkey)
+        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey)
 
 
 @app.route('/', methods = ['GET'])
@@ -54,7 +54,6 @@ def streams():
     """
     active_streams = list_streams()
     active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
-    hls_path = config["application"]["hls_path"].rstrip("/")
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams)
 
