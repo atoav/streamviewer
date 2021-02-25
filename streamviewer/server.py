@@ -88,6 +88,8 @@ def on_publish():
     """
     Gets called by nginx rtmp module whenver a new stream is created
     """
+    if not request.host == "localhost":
+        return "Only allowed from localhost", 403
     streamingkey = request.args.get("name")
     password = request.args.get("password")
     description = request.args.get("description")
@@ -103,6 +105,8 @@ def on_publish_done():
     """
     Gets called by nginx rtmp module whenever a stream is ended
     """
+    if not request.host == "localhost":
+        return "Only allowed from localhost", 403
     streamingkey = request.args.get("name")
     app.logger.info('Got args: {}'.format(streamingkey))
     app.logger.info('Host was: {}'.format(request.host))
