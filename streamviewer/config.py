@@ -18,6 +18,12 @@ DEFAULT_CONFIG = """
 # Hostname, used to replace [[[HOSTNAME]]] in description.md if active
 hostname = "streams.example.com"
 
+# RTMP-port, used to replace [[[RTMP-PORT]]] in description.md if active
+rtmp-port = "1935"
+
+# RTMP-app name, used to replace [[[RTMP-APP-NAME]]] in description.md if active
+rtmp-app-name = "live"
+
 # Title of the page
 page_title="streams.example.com"
 

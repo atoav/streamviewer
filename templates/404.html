@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}{{ page_title }}/{{ streamkey }}{% endblock %}
+{% block head %}
+  <link href="{{ url_for('static', filename='video-js.css') }}" rel="stylesheet">
+  {{ super() }}
+{% endblock %}
+
+{% block header %}
+  <h1 id="page_title"><a href="/">{{ page_title }}</a>/<s>{{ streamkey }}</s></h1>
+{% endblock %}
+
+{% block content %}
+    <h2 class="404">404</h2>
+    <h2>The site you are looking for does not exist here.</h2>
+{% endblock %}
+
+{% block footer %}
+  {{ super() }}
+{% endblock %}
+
+
+
