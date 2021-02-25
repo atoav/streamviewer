@@ -12,15 +12,15 @@ class Stream():
         return self.key
 
 
-    def key(self, key) -> 'Stream':
+    def set_key(self, key) -> 'Stream':
         self.key = key
         return self
 
-    def password(self, password) -> 'Stream':
+    def set_password(self, password) -> 'Stream':
         self.password = password
         return self
 
-    def description(self, description) -> 'Stream':
+    def set_description(self, description) -> 'Stream':
         self.description = description
         return self
     
@@ -44,10 +44,10 @@ class StreamList():
             self.max_streams = n
         return self
 
-    def has_stream(self, stream: 'Stream') -> bool:
+    def has_stream(self, stream) -> bool:
         return any([s == stream for s in self.streams])
 
-    def return_matching_stream(self, stream: 'Stream') -> Optional['Stream']:
+    def get_stream(self, stream) -> Optional['Stream']:
         matches = [s for s in self.streams if s == stream]
         if len(matches) == 0:
             return None

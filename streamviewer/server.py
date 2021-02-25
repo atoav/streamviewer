@@ -45,23 +45,20 @@ def stream(streamkey):
     If there is a stream, display it, otherwise note that the stream is missing
     """
     app.logger.info('200, Access to /{}'.format(streamkey))
-    app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
 
     # Strip potential trailing slashes
     streamkey = streamkey.rstrip("/")
 
-    # Get a list of the active streams
-    active_streams = list_streams()
-    active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
-
     # Render a different Template if the stream is missing
-    if streamkey not in active_streams:
+    if not streamlist.has_stream(streamkey):
         # Stream was Missing, log warning
         app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
         return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
     else:
+        app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
+        stream = streamlist.get_stream(streamkey)
         # Everything ok, return Stream
-        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey)
+        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description)
 
 
 
@@ -78,9 +75,8 @@ def streams():
     """
     List the streams
     """
-    # Get a lsit of active streams and log it
-    active_streams = list_streams()
-    active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
+    # Get a list of active streams and log it
+    active_streams = [s.key for s in streamlist]
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
 
     # Return the template
@@ -99,7 +95,9 @@ def on_publish():
     description = request.values.get("description")
     app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
 
-    stream = Stream().key(streamingkey).password(password).description(description)
+    stream = Stream().set_key(streamingkey)\
+                     .set_password(password)\
+                     .set_description(description)
     if streamlist.add_stream(stream):
         app.logger.info('Stream \"{}\" got added to Streamlist'.format(streamingkey))
         # 201 Created
