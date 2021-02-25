@@ -1,0 +1,20 @@
+[Unit]
+Description="streamviewer webfrontend to list and display HLS videostreams received via RTMP"
+Before=nginx.service
+
+[Service]
+Type=simple
+User=wwwrun
+WorkingDirectory=/srv/streamviewer
+ExecStart=/srv/streamviewer/env/bin/gunicorn streamviewe.server:app
+Restart=always
+RestartSec=30
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectSystem=full
+NoNewPrivileges=yes
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+
