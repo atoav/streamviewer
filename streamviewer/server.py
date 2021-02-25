@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
-import re
+import re, os
 from pathlib import Path
 import datetime as dt
 import sqlite3
@@ -18,7 +18,7 @@ Markdown(app)
 config = initialize_config(app.logger)
 config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/")
 
-with open("../static/description.md") as f:
+with open(os.path.join(app.instance_path, "static/description.md")) as f:
     description = f.read()
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, flask.request.host_url))
