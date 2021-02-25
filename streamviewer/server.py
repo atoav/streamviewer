@@ -100,7 +100,7 @@ def on_publish():
     app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
 
     stream = Stream().key(streamingkey).password(password).description(description)
-    if streamlist.add_stream(stream)
+    if streamlist.add_stream(stream):
         app.logger.info('Stream \"{}\" got added to Streamlist'.format(streamingkey))
         # 201 Created
         return "Created", 201
