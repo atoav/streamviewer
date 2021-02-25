@@ -83,12 +83,13 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
-@app.route('/meta', methods = ['POST'])
+@app.route('/meta')
 def meta():
     """
     List the streams
     """
     streamingkey = request.args.get("name")
+    password = request.args.get("password")
     description = request.args.get("description")
     app.logger.info('Got args: {}, {}'.format(streamingkey, description))
 
