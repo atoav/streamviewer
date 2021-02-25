@@ -4,6 +4,7 @@ import re, os
 from pathlib import Path
 import datetime as dt
 import subprocess
+import humanize
 from flask import Flask, request, render_template, send_from_directory
 from flaskext.markdown import Markdown
 
@@ -23,6 +24,7 @@ HOSTNAME  = subprocess.check_output('hostname').decode('utf8')
 config = initialize_config(app.logger)
 config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/")
 
+    
 
 # Read the description.md from the static folder
 with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
@@ -31,6 +33,7 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = description.replace("[[[HOSTNAME]]]", config["application"]["hostname"])
     description = description.replace("[[[RTMP-PORT]]]", config["application"]["rtmp-port"])
     description = description.replace("[[[RTMP-APP-NAME]]]", config["application"]["rtmp-app-name"])
+    description = description.replace("[[[PROTECTIONPERIOD]]]", humanize.naturaldelta(dt.timedelta(minutes=config["application"]["password_protection_period"])))
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
@@ -67,8 +70,9 @@ def stream(streamkey):
         return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
     else:
         app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
+        running_since = humanize.naturaldelta(timedelta(seconds=stream.active_since()))
         # Everything ok, return Stream
-        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description)
+        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description, running_since=running_since)
 
 
 @app.route('/', methods = ['GET'])

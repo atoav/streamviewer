@@ -2,6 +2,25 @@
 
 To stream to this site you need a streaming source and point it to the right RTMP address. Then you will be able to see the result on this web page, or grab the RTMP stream with a Sink (see below).
 
+### RTMP Addresses
+To send a stream you have to use the correct RTMP Address.
+A RTMP Address consists of (in that order):
+- Protokoll: `rtmp://`
+- Hostname: `[[[HOSTNAME]]]`
+- Port: `:[[[RTMP-PORT]]]`
+- RTMP-Application Name: `/[[[RTMP-APP-NAME]]]`
+- Stream Key (of your choice): e.g. `/test`
+- Other key-value pairs (optional, started with `?` combined with `&`): e.g. `?description=blabla&password=1234`
+
+If we used all of the above we would get:  
+```
+rtmp://[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test?description=blabla&password=1234
+```
+
+Passwords protect the used stream key (in the example above `test`) for [[[PROTECTIONPERIOD]]] after the stream has become inactive.  
+
+Descriptions support Markdown, but make sure to convert the text with a [urlencode tool](https://www.urlencoder.org/) first otherwise it won't work.
+
 
 ### Sources
 Which software you use to create an RTMP stream is up to you. Here is a (non-exhaustive) list of different tools
