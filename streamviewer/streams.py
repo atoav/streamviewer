@@ -73,6 +73,6 @@ class StreamList():
 
         return True
 
-    def remove_stream(self, key: str) -> 'Streamlist':
+    def remove_stream(self, key: str) -> 'StreamList':
         self.streams = [s for s in self.streams if s != key]
         return self
