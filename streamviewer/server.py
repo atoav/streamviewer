@@ -83,11 +83,13 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
-@app.route('/meta', methods = ['POST'])
+@app.route('/meta', methods = ['GET', 'POST'])
 def meta():
     """
     List the streams
     """
+    if request.args.get('name') is None or request.args.get('swfurl') is None:
+        return 'Malformed request', 400
     streamingkey = request.args.get("name")
     password = request.args.get("password")
     description = request.args.get("description")
