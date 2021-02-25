@@ -5,6 +5,7 @@ body {
     color: rgba(255,255,255,0.9);
     margin: 0;
     padding: 0;
+    font-family: monospace;
     display: grid;
     grid-template-columns: 10em auto 10em;
     grid-auto-rows: 3em auto auto;
@@ -14,20 +15,46 @@ body {
         ". stream ."
         ". description .";
 }
+
 @media only screen and (max-width: 990px) {
   body {
     grid-template-columns: 4.5em auto 4.5em;
       font-size: 16px;
   }
 }
+
 content{
     grid-area: stream;
     box-sizing: border-box;
+    border: 1px dashed white;
+    min-height: 90vh;
 }
+
 #stream { 
     width: 100% !important;
     box-sizing: border-box;
 }
+
+content .active_streams {
+    
+}
+
+content .active_streams .active_stream {
+    list-style: none;
+    color: white;
+    font-size: 2em;
+    margin-left: 3ch;
+}
+
+content .active_streams .active_stream a {
+    color: white;
+    font-size: 1em;
+}
+
+content .active_streams .active_stream:before {
+    content: "→ ";
+}
+
 header {
     margin-top: 0.5em;
     grid-area: title;
@@ -44,7 +71,7 @@ header h1 a:not(:first-of-type) {
 
 h1, h2, h3, h4, h5, h6, p, i {
     color: rgba(255,255,255,0.9);
-    font-family: monospace;
+    
     font-weight: normal;
     margin: 0;
     padding: 0;
