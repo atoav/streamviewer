@@ -1,13 +1,14 @@
-<html>
+{% extends "layout.html" %}
+{% block title %}{ page_title }} > active streams [{{ active_streams|length }}]{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="3600">
-  <title>{{ page_title }} > active_streams</title>
-  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-</head>
+{% block header %}
+	<h1 id="page_title" class="{{ streamcount }}">{{ page_title }} > active streams [{{ active_streams|length }}]</h1>
+{% endblock %}
 
-<body>
+{% block content %}
 	{% if active_streams|length > 1 %}
 		{% set streamcount="many" %}
 	{% elif active_streams|length > 0 %}
@@ -15,7 +16,7 @@
 	{% else %}
 		{% set streamcount="none" %}
 	{% endif %}
-	<h1 id="page_title" class="{{ streamcount }}">{{ page_title }} > active streams [{{ active_streams|length }}]</h1>
+
 	<div class="active_streams {{streamcount}}">
 		<ul class="streamlist">
 		{% for stream in active_streams %}
@@ -25,5 +26,9 @@
 		{% endfor %}
 		</ul>
 	</div>
-</body>
-</html>
+{% endblock %}
+
+{% block footer %}
+  {{ super() }}
+{% endblock %}
+
