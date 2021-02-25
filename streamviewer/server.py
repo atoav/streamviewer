@@ -91,7 +91,7 @@ def meta():
     streamingkey = request.args.get("name")
     password = request.args.get("password")
     description = request.args.get("description")
-    app.logger.info('Got args: {}, {}'.format(streamingkey, description))
+    app.logger.info('Got args: {}, {}'.format(streamingkey, password))
 
     # 201 Created
     return "Ok", 201
