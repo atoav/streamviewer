@@ -83,16 +83,16 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
-@app.route('/on_publish', methods = ['GET'])
+@app.route('/on_publish', methods = ['GET', 'POST'])
 def on_publish():
     """
     Gets called by nginx rtmp module whenver a new stream is created
     """
     if not request.host == "localhost":
         return "Only allowed from localhost", 403
-    streamingkey = request.args.get("name")
-    password = request.args.get("password")
-    description = request.args.get("description")
+    streamingkey = request.values.get("name")
+    password = request.values.get("password")
+    description = request.values.get("description")
     app.logger.info('Got args: {}, {}, {}'.format(streamingkey, password, description))
     app.logger.info('Host was: {}'.format(request.host))
 
@@ -100,14 +100,14 @@ def on_publish():
     return "Created", 201
 
 
-@app.route('/on_publish_done', methods = ['GET'])
+@app.route('/on_publish_done', methods = ['GET', 'POST'])
 def on_publish_done():
     """
     Gets called by nginx rtmp module whenever a stream is ended
     """
     if not request.host == "localhost":
         return "Only allowed from localhost", 403
-    streamingkey = request.args.get("name")
+    streamingkey = request.values.get("name")
     app.logger.info('Got args: {}'.format(streamingkey))
     app.logger.info('Host was: {}'.format(request.host))
 
