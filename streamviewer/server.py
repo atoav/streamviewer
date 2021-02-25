@@ -88,8 +88,6 @@ def meta():
     """
     List the streams
     """
-    if request.args.get('name') is None or request.args.get('swfurl') is None:
-        return 'Malformed request', 400
     streamingkey = request.args.get("name")
     password = request.args.get("password")
     description = request.args.get("description")
