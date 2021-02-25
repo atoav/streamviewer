@@ -1,6 +1,10 @@
 # streamviewer
 
-Streamviewer is a python based web frontend that allows you to view HLS Streams received via NGINX-RTMP.
+Streamviewer is a python based web frontend that allows you to view HLS Streams received via NGINX-RTMP. This means users can stream to your server via RTMP, grab the RTMP-stream from there or view the stream on the website.
+
+Streamviewer is (as of now) mostly stateless, that means there is not database, no accounts, nothing. Users can password protect their stream keys (by adding it to the RTMP URL like `?password=1234`) so others cannot snatch them away, but if the streamviewer service restarts the passwords are lost. This is because streamviewer was made to be used in a local network, where random users streaming undesireable content is not such a big danger.
+
+Maybe there will be a version with accounts (and LDAP support?) in the future, but who knows.
 
 
 
