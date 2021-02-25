@@ -1,0 +1,29 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="3600">
+  <title>{{ page_title }} > active_streams</title>
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+	{% if active_streams|length > 1 %}
+		{% set streamcount="many" %}
+	{% elif active_streams|length > 0 %}
+		{% set streamcount="one" %}
+	{% else %}
+		{% set streamcount="none" %}
+	{% endif %}
+	<h1 id="page_title" class="{{ streamcount }}">{{ page_title }} > active streams [{{ active_streams|length }}]</h1>
+	<div class="active_streams {{streamcount}}">
+		<ul class="streamlist">
+		{% for stream in active_streams %}
+			<li class="active_stream">
+				<a href="stream/{{ stream }}">{{ stream }}</a>
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+</body>
+</html>

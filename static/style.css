@@ -1,15 +1,49 @@
 body { 
     width: 100%; 
     height: 100%;
-    margin: 1em;
     background-color: rgba(0,0,0,0.9);
     color: rgba(255,255,255,0.9);
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 10em auto 10em;
+    grid-auto-rows: 3em auto auto;
+    font-size: 14px;
+    grid-template-areas:
+        ". title ."
+        ". stream ."
+        ". description .";
 }
-video, video-js { 
-    width: 100%; 
-    min-width: 100%; 
+@media only screen and (max-width: 990px) {
+  body {
+    grid-template-columns: 4.5em auto 4.5em;
+      font-size: 16px;
+  }
 }
-
+#streamcontainer{
+    grid-area: stream;
+    box-sizing: border-box;
+}
+#stream { 
+    width: 100% !important;
+    box-sizing: border-box;
+}
+#page_title {
+    margin-top: 0.5em;
+    grid-area: title;
+}
 h1, h2, h3, h4, h5, h6, p, i {
     color: rgba(255,255,255,0.9);
+    font-family: monospace;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+.vjs-live-display:before {
+    content: "⬤ ";
+    color: red;
+}
+.vjs-big-play-button{
+    margin-left: 43%;
+    margin-top: 24%;
 }
