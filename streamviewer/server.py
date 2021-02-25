@@ -3,7 +3,7 @@
 import re, os
 from pathlib import Path
 import datetime as dt
-import sqlite3
+import subproccess
 from flask import Flask, request, render_template, send_from_directory
 from flaskext.markdown import Markdown
 
@@ -13,7 +13,10 @@ from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
 # Initialization
 app = Flask(APPLICATION_NAME, template_folder='../templates', static_folder="../static")
 Markdown(app)
+
+# Get some strings
 SCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
+HOSTNAME  = subprocess.check_output('hostname').decode('utf8')
 
 # Initialize the configuration (create a default one if needed)
 config = initialize_config(app.logger)
@@ -22,7 +25,7 @@ config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/"
 with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = f.read()
 
-app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, request.host_url))
+app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
 
 
