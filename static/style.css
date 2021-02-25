@@ -20,7 +20,7 @@ body {
       font-size: 16px;
   }
 }
-#streamcontainer{
+content{
     grid-area: stream;
     box-sizing: border-box;
 }
@@ -28,10 +28,20 @@ body {
     width: 100% !important;
     box-sizing: border-box;
 }
-#page_title {
+header {
     margin-top: 0.5em;
     grid-area: title;
 }
+
+header h1 a {
+    color: white;
+    margin-right: 0.5ch;
+}
+
+header h1 a:not(:first-of-type) {
+    margin-left: 0.5ch;
+}
+
 h1, h2, h3, h4, h5, h6, p, i {
     color: rgba(255,255,255,0.9);
     font-family: monospace;
