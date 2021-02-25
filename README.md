@@ -51,6 +51,8 @@ rtmp {
         application live { 
             live on; 
             interleave on;
+            on_publish http://localhost/on_publish;
+            on_publish_done http://localhost/on_publish_done;
  
             hls on; 
             hls_path /data/hls; 
