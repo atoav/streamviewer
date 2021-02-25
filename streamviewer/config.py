@@ -389,8 +389,17 @@ def create_config():
     selection = config_directories[int(selection)]
 
     # Create the directory if it doesn't exist yet
-    selection["path"].mkdir(mode=0o755, parents=True, exist_ok=True)
-    config_path = Path("{}/{}".format(selection, "00-config.toml"))
+    try:
+        selection["path"].mkdir(mode=0o755, parents=True, exist_ok=True)
+    except PermissionError:
+        print()
+        print("Error: Didn't have the permissions to create the config directory at {}".format(selection["path"]), file=sys.stderr)
+        print("       Directory \"{}\" belongs to user {} (was running as user {})".format(selection["path"], selection["path"].owner(), getpass.getuser()), file=sys.stderr)
+        print()
+        print("Hint:  Change the owner of the directory temporarily to {} or run {} config create with more permissions".format(getpass.getuser(), APPLICATION_NAME))
+        exit()
+
+    config_path = Path("{}/{}".format(selection["path"], "00-config.toml"))
 
     # If the 00-config.toml already exists, ask whether it shall be moved to 00-config.toml.old
     if config_path.is_file():
@@ -420,7 +429,7 @@ def create_config():
     except PermissionError as e:
         print()
         print("Error: Didn't have the permissions to write the file to {}".format(config_path), file=sys.stderr)
-        print("       Directory \"{}\" belongs to user {} (was running as user {})".format(selection, selection.owner(), getpass.getuser()), file=sys.stderr)
+        print("       Directory \"{}\" belongs to user {} (was running as user {})".format(selection["path"], selection["path"].owner(), getpass.getuser()), file=sys.stderr)
         print()
         print("Hint:  Change the owner of the directory temporarily to {} or run {} config create with more permissions".format(getpass.getuser(), APPLICATION_NAME))
         exit()
