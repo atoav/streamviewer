@@ -83,19 +83,32 @@ def streams():
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
-@app.route('/meta', methods = ['GET', 'POST'])
-def meta():
+@app.route('/on_publish', methods = ['GET'])
+def on_publish():
     """
-    List the streams
+    Gets called by nginx rtmp module whenver a new stream is created
     """
     streamingkey = request.args.get("name")
     password = request.args.get("password")
     description = request.args.get("description")
-    app.logger.info('Got args: {}, {}'.format(streamingkey, password))
-    app.logger.info('More args: {}'.format(request.data))
+    app.logger.info('Got args: {}, {}, {}'.format(streamingkey, password, description))
+    app.logger.info('Host was: {}'.format(request.host))
 
     # 201 Created
-    return "Ok", 201
+    return "Created", 201
+
+
+@app.route('/on_publish_done', methods = ['GET'])
+def on_publish_done():
+    """
+    Gets called by nginx rtmp module whenever a stream is ended
+    """
+    streamingkey = request.args.get("name")
+    app.logger.info('Got args: {}'.format(streamingkey))
+    app.logger.info('Host was: {}'.format(request.host))
+
+    return "Ok", 200
+
 
 
 
