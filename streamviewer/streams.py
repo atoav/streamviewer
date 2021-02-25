@@ -45,7 +45,7 @@ class StreamList():
         return self
 
     def has_stream(self, stream) -> bool:
-        return any([s == stream for s in self.streams])
+        return any([s.key == stream for s in self.streams])
 
     def get_stream(self, stream) -> Optional['Stream']:
         matches = [s for s in self.streams if s == stream]
