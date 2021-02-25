@@ -17,6 +17,7 @@
 		{% set streamcount="none" %}
 	{% endif %}
 
+	{% if list_streams %}
 	<section class="active_streams {{streamcount}}">
 		<ul class="streamlist">
 		{% for stream in active_streams %}
@@ -26,10 +27,14 @@
 		{% endfor %}
 		</ul>
 	</section>
+	{% endif %}
 
-	<section class="description">
-		
-	</section>
+	{% if display_description %}
+		<section class="description">
+			{# Read from static/description.md, can be deactivated in config.toml #}
+			{{ description|md }}
+		</section>
+	{% endif %}
 {% endblock %}
 
 {% block footer %}

@@ -15,8 +15,17 @@ APPLICATION_NAME = "streamviewer"
 # Do not change here, just use an override instead
 DEFAULT_CONFIG = """
 [application]
+# Title of the page
 page_title="stream"
+
+# Path where nginx will create the HLS playlist (e.g. foo.m3u8)
 hls_path="/data/hls"
+
+# Should existing streams be listed on / or /streams?
+list_streams = yes
+
+# Should a description be displayed on / or /streams?
+display_description = yes
 """
 
 # Config for the logger, there should be no need to make

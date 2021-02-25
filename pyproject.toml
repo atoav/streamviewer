@@ -8,6 +8,7 @@ authors = ["David Huss <dh@atoav.com>"]
 python = "^3.6"
 flask = "^1.1.2"
 toml = "^0.10.2"
+Flask-Markdown = "^0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
