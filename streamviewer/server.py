@@ -92,6 +92,7 @@ def meta():
     password = request.args.get("password")
     description = request.args.get("description")
     app.logger.info('Got args: {}, {}'.format(streamingkey, password))
+    app.logger.info('More args: {}, {}'.format(request.args))
 
     # 201 Created
     return "Ok", 201
