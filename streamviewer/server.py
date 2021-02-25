@@ -26,7 +26,7 @@ config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/"
 # Read the description.md from the static folder
 with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = f.read()
-    description = description.replace(config["application"]["hostname"])
+    description = description.replace("[[[HOSTNAME]]]", config["application"]["hostname"])
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
