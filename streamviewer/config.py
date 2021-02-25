@@ -38,6 +38,10 @@ display_description = true
 
 # Maximum Number of streams
 max_streams = 100
+
+# How long stream keys are protected by their password after deactivation in minutes
+# Note: this protection is non-persistent and will be gone after restart
+password_protection_period = 2880
 """
 
 # Config for the logger, there should be no need to make

@@ -35,14 +35,24 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
 # Create a streamlist
-streamlist = StreamList().set_max_streams(config["application"]["max_streams"])
+streamlist = StreamList().set_max_streams(config["application"]["max_streams"])\
+                         .set_password_protection_period(config["application"]["password_protection_period"])
 
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """
+    Gets displayed when a page is not found
+    Note: Cases where a stream was not found this are handled by streams() below
+    """
+    return render_template('404.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"]), 404
 
 
 @app.route('/streams/<streamkey>', methods = ['GET'])
 def stream(streamkey):
     """
-    If there is a stream, display it, otherwise note that the stream is missing
+    If there is a stream, display it, otherwise display a missing message
     """
     app.logger.info('200, Access to /{}'.format(streamkey))
 
@@ -61,19 +71,11 @@ def stream(streamkey):
         return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description)
 
 
-
-@app.errorhandler(404)
-def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('404.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"]), 404
-
-
-
 @app.route('/', methods = ['GET'])
 @app.route('/streams', methods = ['GET'])
 def streams():
     """
-    List the streams
+    List the streams and the description.md if set in the config
     """
     # Get a list of active streams and log it
     active_streams = [s.key for s in streamlist]
@@ -86,18 +88,28 @@ def streams():
 @app.route('/on_publish', methods = ['POST'])
 def on_publish():
     """
-    Gets called by nginx rtmp module whenver a new stream is created
+    Gets called by nginx rtmp module whenver a new incoming stream is created and
+    creates a Stream if:
+    - there is no existing stream with the same key
+    - key and password matches a existing passwort protected (inactive) stream
+    - the number of maximum streams specified in the config is not reached yet
     """
+    # Request which don't come from localhost are ignored (to avoid malicious stuff)
     if not request.host == "localhost":
         return "Only allowed from localhost", 403
+
+    # Extract some information from the POST data (None if none)
     streamingkey = request.values.get("name")
     password = request.values.get("password")
     description = request.values.get("description")
     app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
 
+    # Create a stream
     stream = Stream().set_key(streamingkey)\
                      .set_password(password)\
                      .set_description(description)
+
+    # Try to add the stream to the streamlist
     if streamlist.add_stream(stream):
         app.logger.info('Stream \"{}\" got added to Streamlist'.format(streamingkey))
         # 201 Created
@@ -111,8 +123,11 @@ def on_publish():
 @app.route('/on_publish_done', methods = ['POST'])
 def on_publish_done():
     """
-    Gets called by nginx rtmp module whenever a stream is ended
+    Gets called by nginx rtmp module whenever a incoming stream ends
+    If the stream was password protected the stream gets just deactivated till
+    someone logs on again
     """
+    # Request which don't come from localhost are ignored (to avoid malicious stuff)
     if not request.host == "localhost":
         return "Only allowed from localhost", 403
     streamingkey = request.values.get("name")
@@ -120,26 +135,3 @@ def on_publish_done():
     streamlist.remove_stream(streamingkey)
 
     return "Ok", 200
-
-
-
-
-
-def stream_exists(streamkey) -> bool:
-    """
-    Return true when the stream 
-    """
-    active_streams = list_streams()
-    active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
-    return streamkey in active_streams
-
-
-def list_streams():
-    """
-    Return a list of currently active streams, unless deactivated in config.toml
-    """
-    if config["application"]["list_streams"]:
-        hls_path = Path(config["application"]["hls_path"].rstrip("/"))
-        return list(hls_path.glob('*.m3u8'))
-    else:
-        return []
