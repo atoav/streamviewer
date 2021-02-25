@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block header %}
-  <h1 id="page_title">{{ page_title }}/{{ streamkey }}</h1>
+  <h1 id="page_title"><a href="/">{{ page_title }}</a>/<a href="/streams/{{ streamkey }}">{{ streamkey }}</a></h1>
 {% endblock %}
 
 {% block content %}
