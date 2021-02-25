@@ -92,7 +92,7 @@ def meta():
     app.logger.info('Got args: {}'.format(", ".join([str(s) for s in args])))
 
     # 201 Created
-    return 201
+    return "Ok", 201
 
 
 
