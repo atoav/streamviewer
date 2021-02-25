@@ -15,8 +15,11 @@ APPLICATION_NAME = "streamviewer"
 # Do not change here, just use an override instead
 DEFAULT_CONFIG = """
 [application]
+# Hostname, used to replace [[[HOSTNAME]]] in description.md if active
+hostname = "streams.example.com"
+
 # Title of the page
-page_title="stream"
+page_title="streams.example.com"
 
 # Path where nginx will create the HLS playlist (e.g. foo.m3u8)
 hls_path="/data/hls"

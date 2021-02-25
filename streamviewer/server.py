@@ -22,8 +22,11 @@ HOSTNAME  = subprocess.check_output('hostname').decode('utf8')
 config = initialize_config(app.logger)
 config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/")
 
+
+# Read the description.md from the static folder
 with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = f.read()
+    description = description.replace(config["application"]["hostname"])
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
@@ -49,9 +52,11 @@ def stream(streamkey):
 
     # Render a different Template if the stream is missing
     if streamkey not in active_streams:
+        # Stream was Missing, log warning
         app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
-        return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey)
+        return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"])
     else:
+        # Everything ok, return Stream
         return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey)
 
 
@@ -61,16 +66,19 @@ def streams():
     """
     List the streams
     """
+    # Get a lsit of active streams and log it
     active_streams = list_streams()
     active_streams = [str(s).rsplit("/")[-1].replace(".m3u8", "") for s in active_streams]
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
+
+    # Return the template
     return render_template('streams.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], active_streams=active_streams, description=description, display_description=config["application"]["display_description"], list_streams=config["application"]["list_streams"])
 
 
 
 def list_streams():
     """
-    Return a list of currently active streams
+    Return a list of currently active streams, unless deactivated in config.toml
     """
     if config["application"]["list_streams"]:
         hls_path = Path(config["application"]["hls_path"].rstrip("/"))
