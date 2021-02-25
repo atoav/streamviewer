@@ -13,12 +13,13 @@ from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
 # Initialization
 app = Flask(APPLICATION_NAME, template_folder='../templates', static_folder="../static")
 Markdown(app)
+SCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
 
 # Initialize the configuration (create a default one if needed)
 config = initialize_config(app.logger)
 config["application"]["hls_path"] = config["application"]["hls_path"].rstrip("/")
 
-with open(os.path.join(app.instance_path, "../static/description.md")) as f:
+with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     description = f.read()
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, flask.request.host_url))
