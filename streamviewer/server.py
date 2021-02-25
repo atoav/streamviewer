@@ -89,7 +89,7 @@ def meta():
     List the streams
     """
     args = request.args
-    app.logger.info('Got args: {}'.format(", ".join([str(s) s for s in args])))
+    app.logger.info('Got args: {}'.format(", ".join([str(s) for s in args])))
 
     # 201 Created
     return 201
