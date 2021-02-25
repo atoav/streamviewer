@@ -22,10 +22,10 @@ page_title="stream"
 hls_path="/data/hls"
 
 # Should existing streams be listed on / or /streams?
-list_streams = yes
+list_streams = true
 
 # Should a description be displayed on / or /streams?
-display_description = yes
+display_description = true
 """
 
 # Config for the logger, there should be no need to make
