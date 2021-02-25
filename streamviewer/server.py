@@ -35,7 +35,7 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
 # Create a streamlist
-streamlist = Streamlist().set_max_streams(config["application"]["max_streams"])
+streamlist = StreamList().set_max_streams(config["application"]["max_streams"])
 
 
 
