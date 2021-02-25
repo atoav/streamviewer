@@ -80,10 +80,10 @@ def get_config_directories() -> List[dict]:
     Existence of the directories is _not_ checked
     """
 
-    # Generate a etc directory (usually /etc/stechuhr-server)
+    # Generate a etc directory (usually /etc/streamviewer)
     etc_directory = "/etc/{}".format(APPLICATION_NAME)
 
-    # Get the default config dir (usually /home/user/.config/stechuhr-server)
+    # Get the default config dir (usually /home/user/.config/streamviewer)
     default_config_home = "{}/.config/{}".format(get_home(), APPLICATION_NAME)
 
     # Unless the XDG_CONFIG_HOME environment variable has been set, then use this instead
@@ -345,8 +345,8 @@ def create_config():
     """
     helptext = """Configs are read from the following directories (later overrides earlier):
 1. DEFAULT_CONFIG (use config default to inspect)
-2. /etc/stechuhr-server/*.toml (in alphabetical order)
-3. $XDG_CONFIG_HOME/stechuhr-server/*.toml (in alphabetical order)
+2. /etc/streamviewer/*.toml (in alphabetical order)
+3. $XDG_CONFIG_HOME/streamviewer/*.toml (in alphabetical order)
 4. $STECHUHR_SERVER_CONFIG_DIR/*.toml (in alphabetical order)
 5. $STECHUHR_SERVER_CONFIG_PATH (final override)
 """
@@ -394,8 +394,6 @@ def create_config():
     except PermissionError:
         print()
         print("Error: Didn't have the permissions to create the config directory at {}".format(selection["path"]), file=sys.stderr)
-        print("       Directory \"{}\" belongs to user {} (was running as user {})".format(selection["path"], selection["path"].owner(), getpass.getuser()), file=sys.stderr)
-        print()
         print("Hint:  Change the owner of the directory temporarily to {} or run {} config create with more permissions".format(getpass.getuser(), APPLICATION_NAME))
         exit()
 
@@ -442,12 +440,12 @@ def print_help():
     """
     helptext = """========= {} CONFIG =========
 
-Helper tool for managing and installing a stechuhr-server config.
+Helper tool for managing and installing a streamviewer config.
 
 Configs are read from the following directories (later overrides earlier):
 1. DEFAULT_CONFIG (see below)
-2. /etc/stechuhr-server/*.toml (in alphabetical order)
-3. $XDG_CONFIG_HOME/stechuhr-server/*.toml (in alphabetical order)
+2. /etc/streamviewer/*.toml (in alphabetical order)
+3. $XDG_CONFIG_HOME/streamviewer/*.toml (in alphabetical order)
 4. $STECHUHR_SERVER_CONFIG_DIR/*.toml (in alphabetical order)
 5. $STECHUHR_SERVER_CONFIG_PATH (final override)
 
