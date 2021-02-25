@@ -30,7 +30,7 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
     # Replace the placeholder values
     description = description.replace("[[[HOSTNAME]]]", config["application"]["hostname"])
     description = description.replace("[[[RTMP-PORT]]]", config["application"]["rtmp-port"])
-    description = description.replace("[[[RTMP-APP-NAME]]]/", config["application"]["rtmp-app-name"])
+    description = description.replace("[[[RTMP-APP-NAME]]]", config["application"]["rtmp-app-name"])
 
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
