@@ -48,15 +48,15 @@ def stream(streamkey):
 
     # Strip potential trailing slashes
     streamkey = streamkey.rstrip("/")
+    stream = streamlist.get_stream(streamkey)
 
     # Render a different Template if the stream is missing
-    if not streamlist.has_stream(streamkey):
+    if stream is None:
         # Stream was Missing, log warning
         app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
         return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
     else:
         app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
-        stream = streamlist.get_stream(streamkey)
         # Everything ok, return Stream
         return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description)
 

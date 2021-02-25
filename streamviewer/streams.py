@@ -48,7 +48,7 @@ class StreamList():
         return any([s.key == stream for s in self.streams])
 
     def get_stream(self, stream) -> Optional['Stream']:
-        matches = [s for s in self.streams if s == stream]
+        matches = [s for s in self.streams if s.key == stream]
         if len(matches) == 0:
             return None
         return matches[0]
