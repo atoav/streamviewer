@@ -57,7 +57,7 @@ def stream(streamkey):
     if streamkey not in active_streams:
         # Stream was Missing, log warning
         app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
-        return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"], 404)
+        return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
     else:
         # Everything ok, return Stream
         return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey)

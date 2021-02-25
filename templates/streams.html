@@ -19,13 +19,17 @@
 
 	{% if list_streams %}
 	<section class="active_streams {{streamcount}}">
-		<ul class="streamlist">
-		{% for stream in active_streams %}
-			<li class="active_stream">
-				<a href="streams/{{ stream }}">{{ stream }}</a>
-			</li>
-		{% endfor %}
-		</ul>
+		{% if not streamcount == "none" %}
+			<ul class="streamlist">
+			{% for stream in active_streams %}
+				<li class="active_stream">
+					<a href="streams/{{ stream }}">{{ stream }}</a>
+				</li>
+			{% endfor %}
+			</ul>
+		{% else %}
+			<h2>There are currently no active streams</h2>
+		{% endif %}
 	</section>
 	{% endif %}
 
