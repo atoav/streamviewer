@@ -23,6 +23,63 @@ body {
   }
 }
 
+h1, h2, h3, h4, h5, h6, p, i {
+    color: rgba(255,255,255,0.9);
+    
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+
+h3 {
+    font-size: 1.8em;
+    margin-bottom: 0.5em;
+    margin-top: 2.6em;
+}
+
+h4 {
+    font-size: 1.6em;
+    margin-bottom: 0.5em;
+    margin-top: 2.6em;
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 0.6em;
+    line-height: 1.5;
+    max-width: 120ch;
+}
+
+li {
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+
+code {
+    background: rgba(255,255,255,0.7);
+    color: rgba(0,0,0, 0.8);
+    padding: 0.1em 0.5em;
+    border-radius: 0.4em;
+}
+
+strong {
+    font-weight: bold;
+}
+
+em, i, p {
+    font-style: italic;
+}
+
+a {
+    color: white;
+}
+
 content{
     grid-area: stream;
     box-sizing: border-box;
@@ -74,13 +131,7 @@ header h1 a:not(:first-of-type) {
     margin-left: 0.5ch;
 }
 
-h1, h2, h3, h4, h5, h6, p, i {
-    color: rgba(255,255,255,0.9);
-    
-    font-weight: normal;
-    margin: 0;
-    padding: 0;
-}
+
 .vjs-live-display:before {
     content: "⬤ ";
     color: red;
@@ -89,3 +140,5 @@ h1, h2, h3, h4, h5, h6, p, i {
     margin-left: 43%;
     margin-top: 24%;
 }
+
+
