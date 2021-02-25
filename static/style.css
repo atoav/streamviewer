@@ -8,7 +8,7 @@ body {
     font-family: monospace;
     display: grid;
     grid-template-columns: 10em auto 10em;
-    grid-auto-rows: 3em auto auto;
+    grid-auto-rows: 5em auto auto;
     font-size: 14px;
     grid-template-areas:
         ". title ."
@@ -26,7 +26,6 @@ body {
 content{
     grid-area: stream;
     box-sizing: border-box;
-    border: 1px dashed white;
     min-height: 90vh;
 }
 
@@ -35,8 +34,11 @@ content{
     box-sizing: border-box;
 }
 
-content .active_streams {
-    
+content section {
+    border: 1px dashed white;
+    margin-bottom: 1em;
+    padding: 1em;
+    box-sizing: border-box;
 }
 
 content .active_streams .active_stream {
@@ -56,8 +58,11 @@ content .active_streams .active_stream:before {
 }
 
 header {
-    margin-top: 0.5em;
     grid-area: title;
+}
+
+header h1 {
+    margin-top: 0.7em;
 }
 
 header h1 a {

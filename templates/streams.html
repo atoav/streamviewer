@@ -17,7 +17,7 @@
 		{% set streamcount="none" %}
 	{% endif %}
 
-	<div class="active_streams {{streamcount}}">
+	<section class="active_streams {{streamcount}}">
 		<ul class="streamlist">
 		{% for stream in active_streams %}
 			<li class="active_stream">
@@ -25,7 +25,11 @@
 			</li>
 		{% endfor %}
 		</ul>
-	</div>
+	</section>
+
+	<section class="description">
+		
+	</section>
 {% endblock %}
 
 {% block footer %}
