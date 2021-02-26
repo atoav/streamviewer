@@ -168,8 +168,8 @@ class StreamList():
         This protection is non-persistence and will vanish after a restart
         """
         if minutes>= 0:
-            self.password_protection_period = minutes
-            self.logger.debug("Set password_protection_period to {}".format(self.password_protection_period))
+            self.password_protection_period = minutes*60
+            self.logger.debug("Set password_protection_period to {} seconds".format(self.password_protection_period))
         else:
             self.logger.warning("Warning: the password_protection_period had a negative value and was ignored {}".format(minutes))
         return self
@@ -219,9 +219,9 @@ class StreamList():
                     existing_stream = stream
                     self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
                     return True
-                if not existing_stream.has_password_protection(self.password_protection_period):
+                elif not existing_stream.has_password_protection(self.password_protection_period):
                     existing_stream = stream
-                    self.logger.info("Replaced existing stream {} because its password protection period is over".format(stream))
+                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(stream, stream.inactive_since(), self.password_protection_period))
                     return True
         self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
         return False
