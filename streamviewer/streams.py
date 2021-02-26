@@ -1,5 +1,6 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
+import json
 from typing import Optional, NewType, List
 import datetime as dt
 
@@ -61,6 +62,10 @@ class Stream():
         if len(attributes) > 0:
             return "{} ({})".format(self.key, ", ".join(attributes))
         return "{}".format(self.key)
+
+    def to_json(self):
+        return json.dumps(self, default=jsonconverter, 
+            sort_keys=True, indent=4)
 
     def set_key(self, key) -> 'Stream':
         """
@@ -193,6 +198,16 @@ class StreamList():
         """
         return [s for s in self.streams if s.active]
 
+    def listed_streams(self) -> List['Stream']:
+        """
+        Return a list of streams that should be listed (active and not unlisted)
+        """
+        return [s for s in self.active_streams() if not s.unlisted]
+
+    def json_list(self) -> str:
+        return json.dumps(self.listed_streams(), default=jsonconverter, 
+            sort_keys=True, indent=4)
+
     def has_stream(self, stream) -> bool:
         """
         Return True if a stream of that name exists
@@ -303,3 +318,10 @@ class StreamList():
         return self.deactivate_matching_stream(existing_stream)
 
 
+
+
+def jsonconverter(o):
+    if isinstance(o, dt.datetime):
+        return o.__str__()
+    else:
+        return o.__dict__

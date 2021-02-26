@@ -16,6 +16,7 @@ from .streams import Stream, StreamList
 # Initialization
 app = Flask(APPLICATION_NAME, template_folder='../templates', static_folder="../static")
 Markdown(app)
+app.config["SECRET_KEY"] = "b6e8d852-80fb-473d-9437-7e6a65e84875"
 socketio = SocketIO(app)
 
 # Get some strings
@@ -84,7 +85,7 @@ def streams():
     List the streams and the description.md if set in the config
     """
     # Get a list of active streams and log it
-    active_streams = [s for s in streamlist.active_streams() if not s.unlisted]
+    active_streams = streamlist.listed_streams()
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
 
     # Return the template
@@ -120,6 +121,9 @@ def on_publish():
 
     # Try to add the stream to the streamlist
     if streamlist.add_stream(stream):
+        json_list = streamlist.json_list()
+        app.logger.debug('Sending JSON list {}'.format(json_list))
+        socketio.emit('stream_added', {'key': stream.key, 'list': json_list}, broadcast=True)
         # 201 Created
         return "Created", 201
     else:
@@ -141,8 +145,21 @@ def on_publish_done():
     streamingkey = request.values.get("name")
     app.logger.info('Existing RTMP stream \"{}\" ended'.format(streamingkey))
     streamlist.remove_stream(streamingkey)
+    json_list = streamlist.json_list()
+    app.logger.debug('Sending JSON list {}'.format(json_list))
+    socketio.emit('stream_removed', {'key': streamingkey, 'list': json_list}, broadcast=True)
 
     return "Ok", 200
+
+
+
+@socketio.on('client_connected')
+def client_connected(data):
+    app.logger.info('Client connected via socket.io')
+    json_list = streamlist.json_list()
+    app.logger.debug('Sending JSON list {}'.format(json_list))
+    socketio.emit('stream_list', {'list': json_list})
+
 
 
 def value_to_flag(value) -> bool:

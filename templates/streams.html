@@ -19,18 +19,17 @@
 
 	{% if list_streams %}
 	<section class="active_streams {{streamcount}}">
-		{% if not streamcount == "none" %}
-			<ul class="streamlist">
+			<ul id="streamlist" class="streamlist">
 			{% for stream in active_streams %}
 				{% if stream['password'] %}{% set password="password-protected " %}{% else %}{% set password="" %}{% endif %}
 				{% if stream['description'] %}{% set description="has-description " %}{% else %}{% set description="" %}{% endif %}
-				<li class="active_stream {{ password }}{{ description }}">
+				<li class="active_stream stream-{{ stream['key'] }} {{ password }}{{ description }}">
 					<a href="streams/{{ stream['key'] }}">{{ stream['key'] }}</a>
 				</li>
 			{% endfor %}
 			</ul>
-		{% else %}
-			<h2>There are currently no active streams</h2>
+		{% if streamcount == "none" %}
+			<h2 id="no-stream-notice">There are currently no active streams</h2>
 		{% endif %}
 	</section>
 	{% endif %}
@@ -45,5 +44,6 @@
 
 {% block footer %}
   {{ super() }}
+  <script src="{{ url_for('static', filename='sync-streams.js') }}"></script>
 {% endblock %}
 

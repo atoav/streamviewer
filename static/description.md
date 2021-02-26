@@ -19,7 +19,7 @@ A RTMP Address consists of the following pieces (in that order):
 
 If we combine all of the above in that order we would get:  
 ```
-rtmp://[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test?description=blabla&password=1234&unlisted
+rtmp://[[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test?description=blabla&password=1234&unlisted
 ```
 
 That looks like a lot, but for the start you can skip everything after (and including) the `?` — if you are just trying the software out it makes a lot of sense to reduce the things that can go wrong in the beginning.
