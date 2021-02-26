@@ -203,7 +203,7 @@ class StreamList():
         Returns None if no matching stream was found, 
         otherwise the first matching stream is returned
         """
-        matches = [s for s in self.streams if s.key == key and s.active]
+        matches = [s for s in self.streams if s.key == key]
         if len(matches) == 0:
             return None
         return matches[0]
