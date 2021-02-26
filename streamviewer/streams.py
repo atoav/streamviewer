@@ -184,7 +184,7 @@ class StreamList():
         """
         Return True if a stream of that name exists
         """
-        return any([s.key == stream for s in self.streams])
+        return any([s == stream for s in self.streams])
 
     def has_active_stream(self, stream) -> bool:
         """
