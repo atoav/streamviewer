@@ -214,7 +214,7 @@ class StreamList():
         The stream is removed if it has no password, or the password protection
         period is over. Otherwise it is just deactivated
         """
-        existing_stream = get_stream(key)
+        existing_stream = self.get_stream(key)
 
         # Should there be no password protection or the period is over, remove the stream
         if existing_stream.password is None\
