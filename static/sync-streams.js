@@ -76,7 +76,7 @@ function updateStreamList(streamlist) {
   }
 
   // Add or remove the notification "There are currently no active streams" based on the streamcount
-  let existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
+  existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
   if (existingStreams.length > 0) {
     // If there are streams remove the "no streams"-message
     if (document.getElementById("no-stream-notice") !== null) { 
