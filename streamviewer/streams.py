@@ -94,7 +94,7 @@ class Stream():
         delta = self.inactive_since()
         if delta is None:
             return True
-        return delta > password_protection_period
+        return delta < password_protection_period
 
     def deactivate(self) -> 'Stream':
         """
@@ -283,7 +283,7 @@ class StreamList():
 
         if not existing_stream.has_password_protection(self.password_protection_period):
             self.streams = [s for s in self.streams if s.key != key]
-            self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
+            self.logger.info("Removed existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
             return self
 
         # otherwise deactivate it
