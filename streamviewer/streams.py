@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
-from typing import Optional, NewType
+from typing import Optional, NewType, List
 import datetime as dt
 
 Seconds = NewType('Seconds', int)
@@ -105,10 +105,12 @@ class StreamList():
     """
     The StreamList handles all List related duties.
     """
-    def __init__(self):
+    def __init__(self, logger):
+        self.logger = logger
         self.streams = []
         self.max_streams = None
         self.password_protection_period = 0
+        self.logger.debug("Created StreamList")
 
     def __iter__(self):
         """
@@ -123,7 +125,8 @@ class StreamList():
         Streams that get added after this will not be accepted
         """
         if n >= 0:
-            self.max_streams = n
+            self.max_streams = int(n)
+            self.logger.debug("Set max_streams to {}".format(self.max_streams))
         return self
 
     def set_password_protection_period(self, minutes: int) -> 'StreamList':
@@ -134,7 +137,16 @@ class StreamList():
         """
         if minutes>= 0:
             self.password_protection_period = minutes
+            self.logger.debug("Set password_protection_period to {}".format(self.password_protection_period))
+        else:
+            self.logger.warning("Warning: the password_protection_period had a negative value and was ignored {}".format(minutes))
         return self
+
+    def active_streams(self) -> List['Stream']:
+        """
+        Return a list of active streams
+        """
+        return [s for s in self.streams if s.active]
 
     def has_stream(self, stream) -> bool:
         """
@@ -171,9 +183,15 @@ class StreamList():
         """
         for existing_stream in self.streams:
             if existing_stream == stream:
-                if existing_stream.is_valid_password(stream.password) or existing_stream.inactive_since() > self.password_protection_period:
+                if existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
+                    self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream.key))
                     return True
+                if existing_stream.inactive_since() > self.password_protection_period:
+                    existing_stream = stream
+                    self.logger.info("Replaced existing stream {} because its password protection period is over".format(stream.key))
+                    return True
+        self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream.key))
         return False
 
     def deactivate_matching_stream(self, stream: 'Stream') -> 'StreamList':
@@ -183,6 +201,7 @@ class StreamList():
         for existing_stream in self.streams:
             if existing_stream == stream:
                 existing_stream = stream.deactivate()
+                self.logger.info("Deactivated existing stream {}".format(stream.key))
                 return self
 
     def add_stream(self, stream: 'Stream') -> bool:
@@ -196,6 +215,7 @@ class StreamList():
 
         # Check the number of active streams first
         if len([s for s in self.streams if s.active]) >= self.max_streams:
+            self.logger.info("Not adding new stream {} because the maximum of {} active streams is reached".format(stream.key, self.max_streams))
             return False
 
         # If the stream already exist check the password (if there is one) and
@@ -205,6 +225,7 @@ class StreamList():
 
         # If none of the above applies append the Stream to the list
         self.streams.append(stream)
+        self.logger.info("Added new stream {} to list".format(stream.key))
 
         return True
 
@@ -219,7 +240,8 @@ class StreamList():
         # Should there be no password protection or the period is over, remove the stream
         if existing_stream.password is None\
         or existing_stream.inactive_since() > self.password_protection_period:
-            self.streams = [s for s in self.streams if s != key]
+            self.streams = [s for s in self.streams if s.key != key]
+            self.logger.info("Removed existing stream {}".format(key))
             return self
 
         # otherwise deactivate it

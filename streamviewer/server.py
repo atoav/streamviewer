@@ -38,8 +38,8 @@ with open(os.path.join(SCRIPTDIR, "../static/description.md")) as f:
 app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOSTNAME))
 
 # Create a streamlist
-streamlist = StreamList().set_max_streams(config["application"]["max_streams"])\
-                         .set_password_protection_period(config["application"]["password_protection_period"])
+streamlist = StreamList(app.logger).set_max_streams(config["application"]["max_streams"])\
+                                   .set_password_protection_period(config["application"]["password_protection_period"])
 
 
 
@@ -82,7 +82,7 @@ def streams():
     List the streams and the description.md if set in the config
     """
     # Get a list of active streams and log it
-    active_streams = [s.key for s in streamlist]
+    active_streams = [s.key for s in streamlist.active_streams()]
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
 
     # Return the template
