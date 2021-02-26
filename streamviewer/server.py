@@ -107,12 +107,13 @@ def on_publish():
     password = request.values.get("password")
     description = request.values.get("description")
     unlisted = request.values.get("unlisted")
+    app.logger.debug('unlisted was \"{}\"'.format(unlisted))
     if unlisted is not None:
         unlisted = unlisted.lower() in ["1", "yes", "true"]
     else:
         unlisted = False
-    app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
-
+    app.logger.debug('unlisted then was \"{}\"'.format(unlisted))
+    app.logger.info('A new RTMP stream connected to the key \"{}\"'.format(streamingkey))
     # Create a stream
     stream = Stream().set_key(streamingkey)\
                      .set_password(password)\
