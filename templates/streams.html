@@ -22,8 +22,10 @@
 		{% if not streamcount == "none" %}
 			<ul class="streamlist">
 			{% for stream in active_streams %}
-				<li class="active_stream">
-					<a href="streams/{{ stream }}">{{ stream }}</a>
+				{% if stream['password'] %}{% set password="password-protected " %}{% else %}{% set password="" %}{% endif %}
+				{% if stream['description'] %}{% set description="has-description " %}{% else %}{% set description="" %}{% endif %}
+				<li class="active_stream {{ password }}{{ description }}">
+					<a href="streams/{{ stream['key'] }}">{{ stream['key'] }}</a>
 				</li>
 			{% endfor %}
 			</ul>

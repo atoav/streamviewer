@@ -82,7 +82,7 @@ def streams():
     List the streams and the description.md if set in the config
     """
     # Get a list of active streams and log it
-    active_streams = [s.key for s in streamlist.active_streams()]
+    active_streams = [s for s in streamlist.active_streams() if not s.unlisted]
     app.logger.info('Listing active streams: {}'.format(", ".join([str(s) for s in active_streams])))
 
     # Return the template
@@ -106,12 +106,18 @@ def on_publish():
     streamingkey = request.values.get("name")
     password = request.values.get("password")
     description = request.values.get("description")
+    unlisted = request.values.get("unlisted")
+    if unlisted is not None:
+        unlisted = unlisted.lower() in ["1", "yes", "true"]
+    else:
+        unlisted = False
     app.logger.info('A new RTMP stream called \"{}\" connected'.format(streamingkey))
 
     # Create a stream
     stream = Stream().set_key(streamingkey)\
                      .set_password(password)\
-                     .set_description(description)
+                     .set_description(description)\
+                     .set_unlisted(unlisted)
 
     # Try to add the stream to the streamlist
     if streamlist.add_stream(stream):

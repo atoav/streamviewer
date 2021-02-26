@@ -6,11 +6,18 @@ import datetime as dt
 Seconds = NewType('Seconds', int)
 
 
-def str_if_not_None(value, s) -> str:
+def str_if_not_None(value, this, that="") -> str:
     if value is not None:
-        return str(s)
+        return str(this)
     else:
-        return ""
+        return str(that)
+
+def str_if_true(value, this, that="") -> str:
+    if value:
+        return str(this)
+    else:
+        return str(that)
+
 
 
 class Stream():
@@ -32,6 +39,7 @@ class Stream():
         self.key = None
         self.password = None
         self.description = None
+        self.unlisted = True
 
     def __repr__(self):
         """
@@ -43,14 +51,12 @@ class Stream():
         return self.key == other.key
 
     def __str__(self) -> str:
-        if not self.active:
-            inactive = "inactive"
-        else:
-            inactive = ""
+        inactive = str_if_true(not self.inactive, "inactive")
+        unlisted = str_if_true(not self.unlisted, "unlisted")
         description = str_if_not_None(self.description, "with description")
         password = str_if_not_None(self.password, "password-protected")
 
-        attributes = [a for a in [inactive, password, description] if a != ""]
+        attributes = [a for a in [unlisted, inactive, password, description] if a != ""]
 
         if len(attributes) > 0:
             return "{} ({})".format(self.key, ", ".join(attributes))
@@ -76,6 +82,13 @@ class Stream():
         This will get rendered as markdown
         """
         self.description = description
+        return self
+
+    def set_unlisted(self, unlisted: bool=True) -> 'Stream':
+        """
+        Set the stream to listed or unlisted (must not be set)
+        """
+        self.unlisted = unlisted
         return self
     
     def is_valid_password(self, password) -> bool:
@@ -223,7 +236,7 @@ class StreamList():
                     self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
                     existing_stream = stream
                     return True
-        self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
+        self.logger.info("Didn't accept new stream {}, because a existing stream is protected".format(stream))
         return False
 
     def deactivate_matching_stream(self, stream: 'Stream') -> 'StreamList':
