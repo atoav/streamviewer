@@ -70,7 +70,7 @@ def stream(streamkey):
         return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
     else:
         app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
-        running_since = humanize.naturaldelta(timedelta(seconds=stream.active_since()))
+        running_since = humanize.naturaldelta(dt.timedelta(seconds=stream.active_since()))
         # Everything ok, return Stream
         return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description, running_since=running_since)
 

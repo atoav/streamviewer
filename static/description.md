@@ -2,7 +2,7 @@
 
 To stream to this site you need a streaming [source](#Sources) and point it to the right RTMP address. Then you will be able to see the stream on this web page, or grab the RTMP stream directly with a [software sink](#Sinks).
 
-### What is an RTMP Address
+### What is an RTMP Address?
 To send a stream you have to use the correct RTMP Address (every server has a different one.  
 
 A RTMP Address consists of the following pieces (in that order):  
