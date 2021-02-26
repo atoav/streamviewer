@@ -50,9 +50,9 @@ class Stream():
         description = str_if_not_None(self.description, "with description")
         password = str_if_not_None(self.password, "password-protected")
 
-        attributes = [inactive, password, description]
+        attributes = [a for a in [inactive, password, description] if a != ""]
 
-        if any([s != "" for s in attributes]):
+        if len(attributes) > 0:
             return "{} ({})".format(self.key, ", ".join(attributes))
         return "{}".format(self.key)
 
