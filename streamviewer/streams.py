@@ -203,7 +203,7 @@ class StreamList():
         Returns None if no matching stream was found, 
         otherwise the first matching stream is returned
         """
-        matches = [s for s in self.streams if s.key == stream and s.active]
+        matches = [s for s in self.streams if s.key == stream.key and s.active]
         if len(matches) == 0:
             return None
         return matches[0]
@@ -272,6 +272,7 @@ class StreamList():
 
         # Should there be no existing stream with that key, return
         if existing_stream is None:
+            self.logger.debug("Tried to remove existing stream {}, but it was None? This should not happen.".format(key))
             return self
 
         # Should there be no password protection or the period is over, remove the stream
