@@ -55,8 +55,8 @@ function updateStreamList(streamlist) {
   // Remove streams after animation played
   if (Array.from(active_streams).length > 0) {
     [...active_streams].forEach(s => {
-      s.addEventListener('transitionend', function(e) {
-        e.remove()
+      s.addEventListener('transitionend', function() {
+        this.remove()
       });
     });
   }
