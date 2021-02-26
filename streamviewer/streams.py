@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
 from typing import Optional, NewType
-from datetime import dt
+import datetime as dt
 
 Seconds = NewType('Seconds', int)
 
