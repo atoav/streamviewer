@@ -12,18 +12,25 @@ A RTMP Address consists of the following pieces (in that order):
 - **Port:** `:[[[RTMP-PORT]]]`
 - **RTMP-Application Name:** `/[[[RTMP-APP-NAME]]]`
 - **Stream Key** (of your choice): e.g. `/test`
-- **Other key-value pairs** (optional, started with `?` combined with `&`): e.g. `?description=blabla&password=1234`
+- **Other Options** (optional, started with `?` combined with `&`):
+    - **Description:** `?description=blabla`
+    - **Password:** `&password=1234`
+    - **Unlisted:** `&unlisted`
 
-If we combine all of the above we would get:  
+If we combine all of the above in that order we would get:  
 ```
-rtmp://[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test?description=blabla&password=1234
+rtmp://[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test?description=blabla&password=1234&unlisted
 ```
 
-You can skip everything after (and including) the `?` — if you are just trying the software out it makes a lot of sense to reduce the things that can go wrong in the beginning.
+That looks like a lot, but for the start you can skip everything after (and including) the `?` — if you are just trying the software out it makes a lot of sense to reduce the things that can go wrong in the beginning.
 
-Passwords protect the used stream key (in the example above `test`) for [[[PROTECTIONPERIOD]]] after the stream has become inactive.  
+### What are the Options?
 
-Descriptions support [Markdown](https://www.markdownguide.org/basic-syntax/) (not everything might be styled perfectly yet). Just make sure to convert the text with a [urlencode tool](https://www.urlencoder.org/) first, otherwise it won't work.
+Passwords protect the used stream key (in the example above `test`) for [[[PROTECTIONPERIOD]]] after the stream has become inactive. This protection is not guaranteed because it won't persist after the server restarted.
+
+Descriptions allow you to display text underneath the streams site. The descriptions support [Markdown](https://www.markdownguide.org/basic-syntax/) for styling. Just make sure to convert the text with a [urlencode tool](https://www.urlencoder.org/) first, otherwise it won't work.
+
+Unlisted is for when your stream should not be listed in the list at the main site (so only people with knowledge of the URL can see it).
 
 
 ### Sources
