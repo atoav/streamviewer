@@ -15,6 +15,7 @@ APPLICATION_NAME = "streamviewer"
 # Do not change here, just use an override instead
 DEFAULT_CONFIG = """
 [application]
+
 # Hostname, used to replace [[[HOSTNAME]]] in description.md if active
 hostname = "streams.example.com"
 
@@ -25,10 +26,10 @@ rtmp-port = "1935"
 rtmp-app-name = "live"
 
 # Title of the page
-page_title="streams.example.com"
+page_title = "streams.example.com"
 
-# Path where nginx will create the HLS playlist (e.g. foo.m3u8)
-hls_path="/data/hls"
+# Path where nginx will create the HLS playlist (e.g. foo.m3u8), see nginx.conf
+hls_path = "/data/hls"
 
 # Should existing streams be listed on / or /streams?
 list_streams = true
@@ -36,12 +37,32 @@ list_streams = true
 # Should a description be displayed on / or /streams?
 display_description = true
 
-# Maximum Number of streams
+# Maximum Number of active streams
 max_streams = 100
 
 # How long stream keys are protected by their password after deactivation in minutes
-# Note: this protection is non-persistent and will be gone after restart
+# Note: this protection is non-persistent and will be gone after restart, for
+#       password protected streams that stay around add it below
 password_protection_period = 2880
+
+# If this option is active, only streams listed below are usable
+free_choice = True
+
+[stream]
+# Stream keys listed here will persist. If you want to allow _only_ these streams
+# set free_choice to False above.
+#
+# each stream.key has to have a name, and can have a password and description,
+# if you set the unlisted option to True it will not show up in the list
+
+    [[stream.key]]
+    name = "test"
+
+    [[stream.key]]
+    name = "private-a688db56-d1e2-4a32-9ab7-5400f5371a60"
+    password = "1234"
+    unlisted = True
+    description = "## The best stream\nSomething truly private, unless you guess the stream key"
 """
 
 # Config for the logger, there should be no need to make
