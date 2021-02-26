@@ -119,7 +119,7 @@ class Stream():
         """
         if self.active:
             return None
-        delta = self.deactivation_time - dt.datetime.now()
+        delta = dt.datetime.now() - self.deactivation_time
         return delta.total_seconds()
 
     def active_since(self) -> Optional['Seconds']:
@@ -129,7 +129,7 @@ class Stream():
         """
         if not self.active:
             return None
-        delta = self.creation_time - dt.datetime.now()
+        delta = dt.datetime.now() - self.creation_time
         return delta.total_seconds()
 
 
@@ -221,7 +221,7 @@ class StreamList():
                     return True
                 elif not existing_stream.has_password_protection(self.password_protection_period):
                     existing_stream = stream
-                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(stream, stream.inactive_since(), self.password_protection_period))
+                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(stream, existing_stream.inactive_since(), self.password_protection_period))
                     return True
         self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
         return False
