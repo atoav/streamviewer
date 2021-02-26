@@ -51,7 +51,7 @@ class Stream():
         return self.key == other.key
 
     def __str__(self) -> str:
-        inactive = str_if_true(not self.inactive, "inactive")
+        inactive = str_if_true(self.active, "inactive")
         unlisted = str_if_true(not self.unlisted, "unlisted")
         description = str_if_not_None(self.description, "with description")
         password = str_if_not_None(self.password, "password-protected")
