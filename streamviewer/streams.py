@@ -220,8 +220,8 @@ class StreamList():
                     self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
                     return True
                 elif not existing_stream.has_password_protection(self.password_protection_period):
-                    existing_stream = stream
                     self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(stream, existing_stream.inactive_since(), self.password_protection_period))
+                    existing_stream = stream
                     return True
         self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
         return False
