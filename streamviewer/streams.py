@@ -39,7 +39,7 @@ class Stream():
         self.key = None
         self.password = None
         self.description = None
-        self.unlisted = True
+        self.unlisted = None
 
     def __repr__(self):
         """
@@ -84,7 +84,7 @@ class Stream():
         self.description = description
         return self
 
-    def set_unlisted(self, unlisted: bool=True) -> 'Stream':
+    def set_unlisted(self, unlisted: bool) -> 'Stream':
         """
         Set the stream to listed or unlisted (must not be set)
         """
