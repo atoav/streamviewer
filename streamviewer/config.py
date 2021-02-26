@@ -46,14 +46,14 @@ max_streams = 100
 password_protection_period = 2880
 
 # If this option is active, only streams listed below are usable
-free_choice = True
+free_choice = true
 
 [stream]
 # Stream keys listed here will persist. If you want to allow _only_ these streams
-# set free_choice to False above.
+# set free_choice to false above.
 #
 # each stream.key has to have a name, and can have a password and description,
-# if you set the unlisted option to True it will not show up in the list
+# if you set the unlisted option to true it will not show up in the list
 
     [[stream.key]]
     name = "test"
@@ -61,7 +61,7 @@ free_choice = True
     [[stream.key]]
     name = "private-a688db56-d1e2-4a32-9ab7-5400f5371a60"
     password = "1234"
-    unlisted = True
+    unlisted = true
     description = "## The best stream Something truly private, unless you guess the stream key"
 """
 
