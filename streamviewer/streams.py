@@ -184,19 +184,19 @@ class StreamList():
         """
         Return True if a stream of that name exists
         """
-        return any([s == stream for s in self.streams])
+        return any([s.key == stream.key for s in self.streams])
 
     def has_active_stream(self, stream) -> bool:
         """
         Return True if a active stream of that name exists
         """
-        return any([s.key == stream for s in self.streams if s.active])
+        return any([s.key == stream.key for s in self.streams if s.active])
 
     def has_inactive_stream(self, stream) -> bool:
         """
         Return True if a inactive stream of that name exists
         """
-        return any([s.key == stream for s in self.streams if not s.active])
+        return any([s.key == stream.key for s in self.streams if not s.active])
 
     def get_stream(self, stream) -> Optional['Stream']:
         """
@@ -214,7 +214,7 @@ class StreamList():
         password protection period has perished
         """
         for existing_stream in self.streams:
-            if existing_stream == stream:
+            if existing_stream.key == stream.key:
                 if existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
                     self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
@@ -253,6 +253,7 @@ class StreamList():
         # If the stream already exist check the password (if there is one) and
         # whether that password is still protective or not
         if self.has_stream(stream):
+            self.logger.debug("The new stream \"{}\" already exists in list".format(stream))
             return replace_matching_stream(stream)
 
         # If none of the above applies append the Stream to the list

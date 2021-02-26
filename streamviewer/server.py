@@ -115,7 +115,6 @@ def on_publish():
 
     # Try to add the stream to the streamlist
     if streamlist.add_stream(stream):
-        app.logger.info('Stream \"{}\" got added to Streamlist'.format(streamingkey))
         # 201 Created
         return "Created", 201
     else:
