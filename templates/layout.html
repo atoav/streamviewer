@@ -11,6 +11,16 @@
   <body>
     <header>{% block header %}{% endblock %}</header>
     <content>{% block content %}{% endblock %}</content>
-    <footer>{% block footer %}{% endblock %}</footer>
+    <footer>
+      {% block footer %}
+      <script src="{{ url_for('static', filename='socket.io.js') }}"></script>
+      <script type="text/javascript" charset="utf-8">
+          var socket = io();
+          socket.on('connect', function() {
+              socket.emit('my event', {data: 'I\'m connected!'});
+          });
+      </script>
+      {% endblock %}
+    </footer>
   </body>
 </html>

@@ -7,6 +7,7 @@ import subprocess
 import humanize
 from flask import Flask, request, render_template, send_from_directory
 from flaskext.markdown import Markdown
+from flask_socketio import SocketIO
 
 from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
 from .streams import Stream, StreamList
@@ -15,6 +16,7 @@ from .streams import Stream, StreamList
 # Initialization
 app = Flask(APPLICATION_NAME, template_folder='../templates', static_folder="../static")
 Markdown(app)
+socketio = SocketIO(app)
 
 # Get some strings
 SCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
@@ -153,3 +155,6 @@ def value_to_flag(value) -> bool:
 
     return value.lower() in ["1", "yes", "true", '']
     
+
+if __name__ == '__main__':
+    socketio.run(app)
