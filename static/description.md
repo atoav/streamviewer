@@ -5,9 +5,10 @@ To stream to this site you need a streaming [source](#Sources) and point it to t
 ### What is an RTMP Address
 To send a stream you have to use the correct RTMP Address (every server has a different one.  
 
-A RTMP Address consists of the following pieces (in that order):
+A RTMP Address consists of the following pieces (in that order):  
+
 - **Protocol:** `rtmp://`
-- **Hostname:** `[[[HOSTNAME]]]`
+- **Hostname:** `[[[HOSTNAME]]]`  
 - **Port:** `:[[[RTMP-PORT]]]`
 - **RTMP-Application Name:** `/[[[RTMP-APP-NAME]]]`
 - **Stream Key** (of your choice): e.g. `/test`
