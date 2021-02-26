@@ -5,6 +5,14 @@ import datetime as dt
 
 Seconds = NewType('Seconds', int)
 
+
+def str_if_not_None(value, s) -> str:
+    if value is not None:
+        return str(s)
+    else:
+        return ""
+
+
 class Stream():
     """
     A Stream is _the representation_ of a stream. Streams are actually handled by
@@ -33,6 +41,20 @@ class Stream():
 
     def __cmp__(self, other):
         return self.key == other.key
+
+    def __str__(self) -> str:
+        if not self.active:
+            inactive = "inactive"
+        else:
+            inactive = ""
+        description = str_if_not_None(self.description, "with description")
+        password = str_if_not_None(self.password, "password-protected")
+
+        attributes = [inactive, password, description]
+
+        if any([s != "" for s in attributes]):
+            return "{} ({})".format(self.key, ", ".join(attributes))
+        return "{}".format(self.key)
 
     def set_key(self, key) -> 'Stream':
         """
@@ -195,13 +217,13 @@ class StreamList():
             if existing_stream == stream:
                 if existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
-                    self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream.key))
+                    self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
                     return True
                 if existing_stream.has_password_protection(self.password_protection_period):
                     existing_stream = stream
-                    self.logger.info("Replaced existing stream {} because its password protection period is over".format(stream.key))
+                    self.logger.info("Replaced existing stream {} because its password protection period is over".format(stream))
                     return True
-        self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream.key))
+        self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
         return False
 
     def deactivate_matching_stream(self, stream: 'Stream') -> 'StreamList':
@@ -211,7 +233,7 @@ class StreamList():
         for existing_stream in self.streams:
             if existing_stream == stream:
                 existing_stream = stream.deactivate()
-                self.logger.info("Deactivated existing stream {}".format(stream.key))
+                self.logger.info("Deactivated existing stream {}".format(stream))
                 return self
 
     def add_stream(self, stream: 'Stream') -> bool:
@@ -225,7 +247,7 @@ class StreamList():
 
         # Check the number of active streams first
         if len([s for s in self.streams if s.active]) >= self.max_streams:
-            self.logger.info("Not adding new stream {} because the maximum of {} active streams is reached".format(stream.key, self.max_streams))
+            self.logger.info("Not adding new stream \"{}\" because the maximum of {} active streams is reached".format(stream, self.max_streams))
             return False
 
         # If the stream already exist check the password (if there is one) and
@@ -235,7 +257,7 @@ class StreamList():
 
         # If none of the above applies append the Stream to the list
         self.streams.append(stream)
-        self.logger.info("Added new stream {} to list".format(stream.key))
+        self.logger.info("Added new stream \"{}\" to list".format(stream))
 
         return True
 
