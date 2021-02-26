@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block header %}
-	<h1 id="page_title" class="{{ streamcount }}">{{ page_title }} > active streams [{{ active_streams|length }}]</h1>
+	<h1 id="page_title" class="{{ streamcount }}">{{ page_title }}</h1>
 {% endblock %}
 
 {% block content %}
@@ -19,15 +19,16 @@
 
 	{% if list_streams %}
 	<section class="active_streams {{streamcount}}">
-			<ul id="streamlist" class="streamlist">
-			{% for stream in active_streams %}
-				{% if stream['password'] %}{% set password="password-protected " %}{% else %}{% set password="" %}{% endif %}
-				{% if stream['description'] %}{% set description="has-description " %}{% else %}{% set description="" %}{% endif %}
-				<li class="active_stream stream-{{ stream['key'] }} {{ password }}{{ description }}">
-					<a href="streams/{{ stream['key'] }}">{{ stream['key'] }}</a>
-				</li>
-			{% endfor %}
-			</ul>
+		<h2 id="streamheader">Active Streams [{{ active_streams|length }}]</h2>
+		<ul id="streamlist" class="streamlist">
+		{% for stream in active_streams %}
+			{% if stream['password'] %}{% set password="password-protected " %}{% else %}{% set password="" %}{% endif %}
+			{% if stream['description'] %}{% set description="has-description " %}{% else %}{% set description="" %}{% endif %}
+			<li class="active_stream stream-{{ stream['key'] }} {{ password }}{{ description }}">
+				<a href="streams/{{ stream['key'] }}">{{ stream['key'] }}</a>
+			</li>
+		{% endfor %}
+		</ul>
 		{% if streamcount == "none" %}
 			<h2 id="no-stream-notice">There are currently no active streams</h2>
 		{% endif %}

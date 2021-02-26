@@ -50,9 +50,9 @@ function updateStreamList(streamlist) {
             if (!hasStream(streamlist, key)) { e.remove() }
           });
 
-  var existingStreams = [...streams.querySelectorAll('.active_stream')].map(e => extractStreamKey(e))
 
   // Add all streams from the streamlist that dont exist yet
+  var existingStreams = [...streams.querySelectorAll('.active_stream')].map(e => extractStreamKey(e))
   for (const stream of streamlist) {
     if (!existingStreams.includes(stream.key)) {
       // console.log("Streamlist had key "+stream.key+" so it was added");
@@ -68,6 +68,7 @@ function updateStreamList(streamlist) {
     }
   }
 
+  // Add or remove the notification "There are currently no active streams" based on the streamcount
   var existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
   if (existingStreams.length > 0) {
     // If there are streams remove the "no streams"-message
@@ -81,4 +82,10 @@ function updateStreamList(streamlist) {
     h2.id = "no-stream-notice";
     streams.appendChild(h2);
   }
+
+  // Update the streamcount in the title
+  if (document.getElementById("streamheader") !== null) { 
+    document.getElementById("streamheader").textContent = "Active Streams [" + existingStreams.length + "]";
+  }
+
 }
