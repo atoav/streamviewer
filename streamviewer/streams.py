@@ -80,7 +80,7 @@ class Stream():
         self.active = True
         self.deactivation_time = False
 
-    def inactive_since() -> Optional['Seconds']:
+    def inactive_since(self) -> Optional['Seconds']:
         """
         Returns None if the Stream is active, otherwise return the seconds since
         deactivation
@@ -90,7 +90,7 @@ class Stream():
         delta = dt.datetime.now() - self.deactivation_time
         return delta.total_seconds()
 
-    def active_since() -> Optional['Seconds']:
+    def active_since(self) -> Optional['Seconds']:
         """
         Returns None if the Stream is inactive, otherwise return the seconds since
         creation
