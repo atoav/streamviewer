@@ -108,7 +108,7 @@ def on_publish():
     description = request.values.get("description")
     unlisted = request.values.get("unlisted")
     if unlisted is not None:
-        unlisted = unlisted.lower() in ["1", "yes", "true"]
+        unlisted = unlisted.lower() in ["1", "yes", "true", '']
     else:
         unlisted = False
     app.logger.debug('\"{}\" came with values \"{}\"'.format(streamingkey, request.values.to_dict(flat=True)))
