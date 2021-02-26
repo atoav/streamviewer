@@ -15,6 +15,8 @@ APPLICATION_NAME = "streamviewer"
 # Do not change here, just use an override instead
 DEFAULT_CONFIG = """
 [application]
+# Valid Log Levels are Debug, Info, Warning, Error, Critical
+loglevel = "Debug"
 
 # Hostname, used to replace [[[HOSTNAME]]] in description.md if active
 hostname = "streams.example.com"
@@ -213,6 +215,8 @@ def initialize_config(logger=None) -> dict:
         else:
             print("Config [{}]: {} (overrides previous configs)".format(i+2, p))
 
+    logger = set_loglevel(config, logger)
+
     return config
 
 
@@ -224,6 +228,27 @@ def read_config(config_path: str) -> dict:
     with open(str(config_path), "r", encoding="utf-8") as f:
         config = toml.load(f)
     return config
+
+
+def set_loglevel(config, logger):
+    """
+    Set the loglevel based on the config settings
+    """
+    if config["client"]["loglevel"].lower().strip() == "debug":
+        logger.setLevel(logging.DEBUG)
+    elif config["client"]["loglevel"].lower().strip() == "info":
+        logger.setLevel(logging.INFO)
+    elif config["client"]["loglevel"].lower().strip() == "warning":
+        logger.setLevel(logging.WARNING)
+    elif config["client"]["loglevel"].lower().strip() == "error":
+        logger.setLevel(logging.ERROR)
+    elif config["client"]["loglevel"].lower().strip() == "critical":
+        logger.setLevel(logging.CRITICAL)
+    else:
+        logger.critical("The loglevel \"{}\" set in config.toml is invalid use one of the following: \"Debug\", \"Info\", \"Warning\", \"Error\" or \"Critical\"".format(config["client"]["loglevel"]))
+        exit(1)
+    return logger
+
 
 
 def main():
