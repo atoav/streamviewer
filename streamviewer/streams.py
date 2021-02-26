@@ -198,12 +198,12 @@ class StreamList():
         """
         return any([s.key == stream.key for s in self.streams if not s.active])
 
-    def get_stream(self, stream) -> Optional['Stream']:
+    def get_stream(self, key) -> Optional['Stream']:
         """
         Returns None if no matching stream was found, 
         otherwise the first matching stream is returned
         """
-        matches = [s for s in self.streams if s.key == stream.key and s.active]
+        matches = [s for s in self.streams if s.key == key and s.active]
         if len(matches) == 0:
             return None
         return matches[0]
