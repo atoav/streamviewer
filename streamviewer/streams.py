@@ -254,7 +254,7 @@ class StreamList():
         # whether that password is still protective or not
         if self.has_stream(stream):
             self.logger.debug("The new stream \"{}\" already exists in list".format(stream))
-            return replace_matching_stream(stream)
+            return self.replace_matching_stream(stream)
 
         # If none of the above applies append the Stream to the list
         self.streams.append(stream)
