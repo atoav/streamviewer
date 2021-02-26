@@ -270,6 +270,10 @@ class StreamList():
         """
         existing_stream = self.get_stream(key)
 
+        # Should there be no existing stream with that key, return
+        if existing_stream is None:
+            return self
+
         # Should there be no password protection or the period is over, remove the stream
         if existing_stream.password is None\
         or not existing_stream.has_password_protection(self.password_protection_period):
