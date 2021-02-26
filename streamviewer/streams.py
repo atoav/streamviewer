@@ -52,7 +52,7 @@ class Stream():
 
     def __str__(self) -> str:
         inactive = str_if_true(self.active, "inactive")
-        unlisted = str_if_true(not self.unlisted, "unlisted")
+        unlisted = str_if_true(self.unlisted, "unlisted")
         description = str_if_not_None(self.description, "with description")
         password = str_if_not_None(self.password, "password-protected")
 
@@ -84,7 +84,7 @@ class Stream():
         self.description = description
         return self
 
-    def set_unlisted(self, unlisted: bool) -> 'Stream':
+    def set_unlisted(self, unlisted: bool=True) -> 'Stream':
         """
         Set the stream to listed or unlisted (must not be set)
         """
