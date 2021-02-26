@@ -234,18 +234,18 @@ def set_loglevel(config, logger):
     """
     Set the loglevel based on the config settings
     """
-    if config["client"]["loglevel"].lower().strip() == "debug":
+    if config["application"]["loglevel"].lower().strip() == "debug":
         logger.setLevel(logging.DEBUG)
-    elif config["client"]["loglevel"].lower().strip() == "info":
+    elif config["application"]["loglevel"].lower().strip() == "info":
         logger.setLevel(logging.INFO)
-    elif config["client"]["loglevel"].lower().strip() == "warning":
+    elif config["application"]["loglevel"].lower().strip() == "warning":
         logger.setLevel(logging.WARNING)
-    elif config["client"]["loglevel"].lower().strip() == "error":
+    elif config["application"]["loglevel"].lower().strip() == "error":
         logger.setLevel(logging.ERROR)
-    elif config["client"]["loglevel"].lower().strip() == "critical":
+    elif config["application"]["loglevel"].lower().strip() == "critical":
         logger.setLevel(logging.CRITICAL)
     else:
-        logger.critical("The loglevel \"{}\" set in config.toml is invalid use one of the following: \"Debug\", \"Info\", \"Warning\", \"Error\" or \"Critical\"".format(config["client"]["loglevel"]))
+        logger.critical("The loglevel \"{}\" set in config.toml is invalid use one of the following: \"Debug\", \"Info\", \"Warning\", \"Error\" or \"Critical\"".format(config["application"]["loglevel"]))
         exit(1)
     return logger
 
