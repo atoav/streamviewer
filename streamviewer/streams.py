@@ -220,7 +220,7 @@ class StreamList():
                     self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
                     return True
                 elif not existing_stream.has_password_protection(self.password_protection_period):
-                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(stream, existing_stream.inactive_since(), self.password_protection_period))
+                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
                     existing_stream = stream
                     return True
         self.logger.debug("Didn't replaced existing stream {} because it wasn't found (Race condition?)".format(stream))
@@ -276,10 +276,14 @@ class StreamList():
             return self
 
         # Should there be no password protection or the period is over, remove the stream
-        if existing_stream.password is None\
-        or not existing_stream.has_password_protection(self.password_protection_period):
+        if existing_stream.password is None:
             self.streams = [s for s in self.streams if s.key != key]
-            self.logger.info("Removed existing stream {}".format(key))
+            self.logger.info("Removed existing stream {} because it was not password protected".format(existing_stream))
+            return self
+
+        if not existing_stream.has_password_protection(self.password_protection_period):
+            self.streams = [s for s in self.streams if s.key != key]
+            self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
             return self
 
         # otherwise deactivate it
