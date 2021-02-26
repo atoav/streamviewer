@@ -98,6 +98,11 @@ content section {
     margin-bottom: 1em;
     padding: 1em;
     box-sizing: border-box;
+    transition: all 1s ease;
+}
+
+content #streamlist {
+    transition: all 1s ease;
 }
 
 content .active_streams .active_stream {
@@ -105,11 +110,20 @@ content .active_streams .active_stream {
     color: white;
     font-size: 2em;
     margin-left: 3ch;
+    transition: transform 1.5s 0s, opacity 1.25s 0s;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+content .active_streams .inactive_stream {
+    transform: translateX(100vw);
+    opacity: 0;
 }
 
 content .active_streams .active_stream a {
     color: white;
     font-size: 1em;
+    transition: all 1s ease;
 }
 
 content .active_streams .active_stream:before {

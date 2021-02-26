@@ -41,26 +41,33 @@ function hasStream(streamlist, k) {
 function updateStreamList(streamlist) {
 
   // Get the location for the streamlist
-  var streams = document.querySelector("#streamlist");
+  let streams = document.querySelector("#streamlist");
+  let active_streams = streams.querySelectorAll('.active_stream');
 
   // Remove all streams that are not active anymore
-  streams.querySelectorAll('.active_stream')
-          .forEach(e => {
-            var key = extractStreamKey(e);
-            if (!hasStream(streamlist, key)) { e.remove() }
-          });
+  active_streams.forEach(e => {
+    let key = extractStreamKey(e);
+    if (!hasStream(streamlist, key)) { 
+      e.classList.add('inactive_stream');
+    }
+  });
+
+  // Remove streams after animation played
+  active_streams[0].addEventListener('transitionend', function() {
+    [...active_streams].forEach((s) => s.parentNode.removeChild(s))
+  });
 
 
   // Add all streams from the streamlist that dont exist yet
-  var existingStreams = [...streams.querySelectorAll('.active_stream')].map(e => extractStreamKey(e))
+  let existingStreams = [...streams.querySelectorAll('.active_stream')].map(e => extractStreamKey(e))
   for (const stream of streamlist) {
     if (!existingStreams.includes(stream.key)) {
       // console.log("Streamlist had key "+stream.key+" so it was added");
-      var li = document.createElement("li");
+      let li = document.createElement("li");
       li.classList.add("active_stream");
       li.classList.add("stream-"+stream.key);
       // TODO: Add password and description classes
-      var a = document.createElement("a");
+      let a = document.createElement("a");
       a.href = "streams/"+stream.key;
       a.textContent = stream.key;
       li.appendChild(a);
@@ -69,7 +76,7 @@ function updateStreamList(streamlist) {
   }
 
   // Add or remove the notification "There are currently no active streams" based on the streamcount
-  var existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
+  let existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
   if (existingStreams.length > 0) {
     // If there are streams remove the "no streams"-message
     if (document.getElementById("no-stream-notice") !== null) { 
@@ -77,7 +84,7 @@ function updateStreamList(streamlist) {
     }
   }else{
     // If there are no streams add a message
-    var h2 = document.createElement("h2");
+    let h2 = document.createElement("h2");
     h2.textContent = "There are currently no active streams"
     h2.id = "no-stream-notice";
     streams.appendChild(h2);
