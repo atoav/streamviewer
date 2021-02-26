@@ -119,7 +119,7 @@ class Stream():
         """
         if self.active:
             return None
-        delta = dt.datetime.now() - self.deactivation_time
+        delta = self.deactivation_time - dt.datetime.now()
         return delta.total_seconds()
 
     def active_since(self) -> Optional['Seconds']:
@@ -129,7 +129,7 @@ class Stream():
         """
         if not self.active:
             return None
-        delta = dt.datetime.now() - self.creation_time
+        delta = self.creation_time - dt.datetime.now()
         return delta.total_seconds()
 
 
