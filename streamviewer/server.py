@@ -106,11 +106,8 @@ def on_publish():
     streamingkey = request.values.get("name")
     password = request.values.get("password")
     description = request.values.get("description")
-    unlisted = request.values.get("unlisted")
-    if unlisted is not None:
-        unlisted = unlisted.lower() in ["1", "yes", "true", '']
-    else:
-        unlisted = False
+    unlisted = value_to_flag(request.values.get("unlisted"))
+    
     app.logger.debug('\"{}\" came with values \"{}\"'.format(streamingkey, request.values.to_dict(flat=True)))
     app.logger.info('A new RTMP stream connected to the key \"{}\"'.format(streamingkey))
     # Create a stream
@@ -144,3 +141,15 @@ def on_publish_done():
     streamlist.remove_stream(streamingkey)
 
     return "Ok", 200
+
+
+def value_to_flag(value) -> bool:
+    """
+    Return False if the value was None, otherwise return wether it was in the list
+    of true values
+    """
+    if value is None:
+        return False
+
+    return value.lower() in ["1", "yes", "true", '']
+    
