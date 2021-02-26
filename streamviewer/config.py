@@ -62,7 +62,7 @@ free_choice = True
     name = "private-a688db56-d1e2-4a32-9ab7-5400f5371a60"
     password = "1234"
     unlisted = True
-    description = "## The best stream\nSomething truly private, unless you guess the stream key"
+    description = "## The best stream Something truly private, unless you guess the stream key"
 """
 
 # Config for the logger, there should be no need to make
