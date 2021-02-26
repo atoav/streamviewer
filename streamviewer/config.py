@@ -4,6 +4,7 @@
 import os, getpass, sys
 import toml
 from pathlib import Path
+import logging
 from logging.config import dictConfig
 from typing import List
 import collections.abc
