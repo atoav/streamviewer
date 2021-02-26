@@ -53,9 +53,13 @@ function updateStreamList(streamlist) {
   });
 
   // Remove streams after animation played
-  active_streams[0].addEventListener('transitionend', function() {
-    [...active_streams].forEach((s) => streams.removeChild(s))
-  });
+  if (Array.from(active_streams).length > 0) {
+    [...active_streams].forEach(s => {
+      s.addEventListener('transitionend', function(e) {
+        e.remove()
+      });
+    });
+  }
 
 
   // Add all streams from the streamlist that dont exist yet
