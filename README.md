@@ -10,8 +10,11 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 ## Todo
 
 - [ ] Finetuning of example HLS configuration
-- [ ] Add Footer with link to repo
+- [ ] Add Footer with link to repo, contact info
 - [ ] Option to prevent unrestricted usage without preconfigured stream key/password
+- [ ] Option to "protect" certain stream keys
+- [ ] Option ?start=2021-02-23T21.15 and display a countdown before showing the stream
+- [ ] Add socketio for single stream pages (to show realtime notices before streams started, after ended, duration of the stream, viewer count..?)
 - [x] Option to have unlisted streams
 - [x] Option to predefine passwords per stream key in config
 - [x] Try Out Flask socketio integration for realtime listing of current streams
