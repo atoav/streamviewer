@@ -320,8 +320,8 @@ class StreamList():
 
     def add_from_config(self, config) -> 'Streamlist':
 
-        for stream in config["stream"]["key"]:
-            self.logger.info("Predefined stream: {}".format(stream))
+        self.logger.info("Predefined stream: {}".format(config["stream"]))
+        self.logger.info("Predefined stream: {}".format(config["stream"]["key"]))
 
         return self
 
