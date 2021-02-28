@@ -61,11 +61,11 @@ function updateNoStreamsMessage(streams) {
   let existingStreams = Array.from(streams.querySelectorAll('.active_stream')).map(e => extractStreamKey(e))
   if (existingStreams.length > 0) {
     // If there are streams remove the "no streams"-message
-    if (streams.getElementById("no-stream-notice") !== null) { 
-      streams.getElementById("no-stream-notice").remove();
+    if (document.getElementById("no-stream-notice") !== null) { 
+      document.getElementById("no-stream-notice").remove();
     }
   }else{
-    if (streams.getElementById("no-stream-notice") !== null) { 
+    if (document.getElementById("no-stream-notice") !== null) { 
       // If there are no streams add a message
       let h2 = document.createElement("h2");
       h2.textContent = "There are currently no active streams"
