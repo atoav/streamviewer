@@ -388,6 +388,7 @@ class StreamList():
         This is a mechanism to permanently "reserve" certain stream keys
         """
         for stream in config["stream"]:
+            assert(type(stream), dict)
             # Parse the values from the configs
             name        = none_if_no_key_value_otherwise(stream, key="name")
             password    = none_if_no_key_value_otherwise(stream, key="password")
