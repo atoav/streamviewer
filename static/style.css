@@ -90,9 +90,37 @@ header {
         "page_title . viewcount";
 }
 
+#page_title, header h1, header a img, header a{
+    vertical-align: top;
+}
+
 #page_title {
     grid-area: page_title;
+    margin-top: 1.2em;
+    height: 2em;
 }
+
+#page_title .muted:hover{
+    cursor: pointer;
+}
+
+#page_title .muted img {
+    display: inline;
+    height: 2em;
+    margin-left: 1em;
+    animation: fadeinout 2s linear infinite;
+}
+
+@keyframes fadeinout {
+0% { opacity: 1.0;}
+50% {opacity: 0.0;}
+100% {opacity: 1.0;}
+}
+
+#page_title h1 {
+    display: inline;
+}
+
 
 #viewers {
     grid-area: viewcount;
