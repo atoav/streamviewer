@@ -318,6 +318,14 @@ class StreamList():
         return self.deactivate_matching_stream(existing_stream)
 
 
+    def add_from_config(self, config) -> 'Streamlist':
+
+        for stream in config["stream"]["key"]:
+            self.logger.info("Predefined stream: {}".format(stream))
+
+        return self
+
+
 
 
 def jsonconverter(o):

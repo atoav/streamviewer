@@ -43,6 +43,7 @@ app.logger.info("{} is ready to take requests: {}".format(APPLICATION_NAME, HOST
 # Create a streamlist
 streamlist = StreamList(app.logger).set_max_streams(config["application"]["max_streams"])\
                                    .set_password_protection_period(config["application"]["password_protection_period"])
+                                   .add_from_config(config["stream"])
 
 
 
