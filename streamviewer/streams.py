@@ -356,6 +356,13 @@ class StreamList():
             self.logger.info("Not adding new stream \"{}\" because the maximum number of {} active streams is reached".format(stream, self.max_streams))
             return False
 
+        # Initially add protected streams from config. Streams supplied by flask are
+        # always active initially so cannot be set this way
+        if stream.protected and not stream.active:
+            self.streams.append(stream)
+            self.logger.info("Added new protected stream \"{}\" from config to list".format(stream))
+            return True
+
         # If the stream already exist check the password (if there is one) and
         # whether that password is still protective or not
         if self.has_stream(stream):
