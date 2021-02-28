@@ -146,10 +146,12 @@ def on_publish_done():
         return "Only allowed from localhost", 403
     streamingkey = request.values.get("name")
     app.logger.info('Existing RTMP stream \"{}\" ended'.format(streamingkey))
+    stream = streamlist.get_stream(streamingkey)
     streamlist.remove_stream(streamingkey)
-    json_list = streamlist.json_list()
-    app.logger.debug('Sending JSON list {}'.format(json_list))
-    socketio.emit('stream_removed', {'key': streamingkey, 'list': json_list}, broadcast=True)
+    if not stream.unlisted:
+        json_list = streamlist.json_list()
+        app.logger.debug('Sending JSON list {}'.format(json_list))
+        socketio.emit('stream_removed', {'key': streamingkey, 'list': json_list}, broadcast=True)
 
     return "Ok", 200
 
