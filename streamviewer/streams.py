@@ -313,14 +313,14 @@ class StreamList():
         for existing_stream in self.streams:
             if existing_stream.key == stream.key:
                 if existing_stream.protected and existing_stream.password is None:
-                    stream = stream.set_protected(True).activate()
-                    existing_stream = stream
-                    self.logger.info("Replaced existing (protected) stream {}, because the protected stream has no password set".format(existing_stream))
+                    existing_stream = stream.set_protected(True).activate()
+                    existing_stream.active = True
+                    self.logger.info("Replaced existing stream {}, because the protected stream has no password set".format(existing_stream))
                     return True
                 elif existing_stream.protected and existing_stream.is_valid_password(stream.password):
-                    stream = stream.set_protected(True).activate()
-                    existing_stream = stream
-                    self.logger.info("Replaced existing (protected) stream {}, because a valid password was supplied".format(existing_stream))
+                    existing_stream = stream.set_protected(True).activate()
+                    existing_stream.active = True
+                    self.logger.info("Replaced existing stream {}, because a valid password was supplied".format(existing_stream))
                     return True
                 elif existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
@@ -419,8 +419,6 @@ class StreamList():
         This is a mechanism to permanently "reserve" certain stream keys
         """
         for stream in config["stream"]["key"]:
-            assert(type(stream), dict)
-            self.logger.debug("Stream of type \"{}\" was {}".format(type(stream), stream))
             # Parse the values from the configs
             name        = none_if_no_key_value_otherwise(stream, key="name")
             password    = none_if_no_key_value_otherwise(stream, key="password")
