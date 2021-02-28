@@ -58,10 +58,10 @@ free_choice = true
 # each stream.key has to have a name, and can have a password and description,
 # if you set the unlisted option to true it will not show up in the list
 
-    [[stream.key]]
+    [[stream]]
     name = "foo"
 
-    [[stream.key]]
+    [[stream]]
     name = "private-a688db56-d1e2-4a32-9ab7-5400f5371a60"
     password = "1234"
     unlisted = true
