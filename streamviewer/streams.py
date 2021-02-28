@@ -314,25 +314,29 @@ class StreamList():
         Replace the first matching stream if the password is valid or the
         password protection period has perished
         """
-        for existing_stream in self.streams:
+        for i, existing_stream in enumerate(self.streams):
             if existing_stream.key == stream.key:
                 if existing_stream.protected and existing_stream.password is None:
                     existing_stream = stream.set_protected(True).activate()
-                    self.logger.info("Replaced existing stream {}, because the protected stream has no password set".format(existing_stream))
+                    self.streams[i] = existing_stream
+                    self.logger.info("Replaced existing stream with {}, because the protected stream has no password set".format(existing_stream))
                     self.logger.debug("new stream was: {}".format(stream))
                     return True
                 elif existing_stream.protected and existing_stream.is_valid_password(stream.password):
                     existing_stream = stream.set_protected(True).activate()
-                    self.logger.info("Replaced existing stream {}, because a valid password was supplied".format(existing_stream))
+                    self.streams[i] = existing_stream
+                    self.logger.info("Replaced existing stream with {}, because a valid password was supplied".format(existing_stream))
                     self.logger.debug("new stream was: {}".format(stream))
                     return True
                 elif existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
-                    self.logger.info("Replaced existing {}stream {} because a valid password was supplied".format(p, existing_stream))
+                    self.streams[i] = existing_stream
+                    self.logger.info("Replaced existing {}stream with {} because a valid password was supplied".format(p, existing_stream))
                     return True
                 elif not existing_stream.has_password_protection(self.password_protection_period):
-                    self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
+                    self.logger.info("Replaced existing stream with {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
                     existing_stream = stream
+                    self.streams[i] = existing_stream
                     return True
         self.logger.info("Didn't accept new stream {}, because a existing stream is protected".format(stream))
         return False
