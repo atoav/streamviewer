@@ -216,7 +216,8 @@ def initialize_config(logger=None) -> dict:
         else:
             print("Config [{}]: {} (overrides previous configs)".format(i+2, p))
 
-    logger = set_loglevel(config, logger)
+    if logger is not None:
+        logger = set_loglevel(config, logger)
 
     return config
 
