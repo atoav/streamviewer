@@ -27,10 +27,10 @@
 			<li class="active_stream stream-{{ stream['key'] }} {{ password }}{{ description }}">
 				<a href="streams/{{ stream['key'] }}">{{ stream['key'] }}</a>
 			</li>
-			{% if streamcount == "none" %}
-				<h2 id="no-stream-notice">There are currently no active streams</h2>
-			{% endif %}
 		{% endfor %}
+		{% if streamcount == "none" %}
+			<h2 id="no-stream-notice">There are currently no active streams</h2>
+		{% endif %}
 		</ul>
 	</section>
 	{% endif %}

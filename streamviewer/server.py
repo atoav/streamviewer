@@ -123,9 +123,11 @@ def on_publish():
 
     # Try to add the stream to the streamlist
     if streamlist.add_stream(stream):
-        json_list = streamlist.json_list()
-        app.logger.debug('Sending JSON list {}'.format(json_list))
-        socketio.emit('stream_added', {'key': stream.key, 'list': json_list}, broadcast=True)
+        # Only emit a socket.io message if the stream was listed
+        if not stream.unlisted:
+            json_list = streamlist.json_list()
+            app.logger.debug('Sending JSON list {}'.format(json_list))
+            socketio.emit('stream_added', {'key': stream.key, 'list': json_list}, broadcast=True)
         # 201 Created
         return "Created", 201
     else:
@@ -148,6 +150,7 @@ def on_publish_done():
     app.logger.info('Existing RTMP stream \"{}\" ended'.format(streamingkey))
     stream = streamlist.get_stream(streamingkey)
     streamlist.remove_stream(streamingkey)
+    # Only emit a socket.io message if the stream was listed
     if not stream.unlisted:
         json_list = streamlist.json_list()
         app.logger.debug('Sending JSON list {}'.format(json_list))
