@@ -314,13 +314,13 @@ class StreamList():
             if existing_stream.key == stream.key:
                 if existing_stream.protected and existing_stream.password is None:
                     existing_stream = stream.set_protected(True).activate()
-                    existing_stream.active = True
                     self.logger.info("Replaced existing stream {}, because the protected stream has no password set".format(existing_stream))
+                    self.logger.debug("new stream was: {}".format(stream))
                     return True
                 elif existing_stream.protected and existing_stream.is_valid_password(stream.password):
                     existing_stream = stream.set_protected(True).activate()
-                    existing_stream.active = True
                     self.logger.info("Replaced existing stream {}, because a valid password was supplied".format(existing_stream))
+                    self.logger.debug("new stream was: {}".format(stream))
                     return True
                 elif existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
@@ -361,7 +361,7 @@ class StreamList():
         # always active initially so cannot be set this way
         if stream.protected and not stream.active:
             self.streams.append(stream)
-            self.logger.info("Added new protected stream \"{}\" from config to list".format(stream))
+            self.logger.info("Created new protected stream \"{}\" from config".format(stream))
             return True
 
         # If the stream already exist check the password (if there is one) and
