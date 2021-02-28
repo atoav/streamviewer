@@ -10,7 +10,7 @@ from flaskext.markdown import Markdown
 from flask_socketio import SocketIO
 
 from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
-from .streams import Stream, StreamList
+from .streams import Stream, StreamList, value_to_flag
 
 
 # Initialization
@@ -163,15 +163,7 @@ def client_connected(data):
 
 
 
-def value_to_flag(value) -> bool:
-    """
-    Return False if the value was None, otherwise return wether it was in the list
-    of true values
-    """
-    if value is None:
-        return False
 
-    return value.lower() in ["1", "yes", "true", '']
     
 
 if __name__ == '__main__':

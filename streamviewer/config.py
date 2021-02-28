@@ -59,7 +59,7 @@ free_choice = true
 # if you set the unlisted option to true it will not show up in the list
 
     [[stream.key]]
-    name = "test"
+    name = "foo"
 
     [[stream.key]]
     name = "private-a688db56-d1e2-4a32-9ab7-5400f5371a60"

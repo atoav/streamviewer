@@ -1,24 +1,52 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
 import json
-from typing import Optional, NewType, List
+from typing import Optional, NewType, List, Any
 import datetime as dt
 
 Seconds = NewType('Seconds', int)
 
 
 def str_if_not_None(value, this, that="") -> str:
+    """
+    Return this if the supplied value is not None
+    otherwise return that (per default a empty string)
+    """
     if value is not None:
         return str(this)
     else:
         return str(that)
 
 def str_if_true(value, this, that="") -> str:
+    """
+    Return this if the supplied value was True
+    otherwise return that (per default a empty string)
+    """
     if value:
         return str(this)
     else:
         return str(that)
 
+
+def none_if_no_key_value_otherwise(d: dict, key: str, that=None) -> Optional[Any]:
+    """
+    Return the value of dict[key] if the key exists
+    otherwise return that (per default None)
+    """
+    if not key in d.keys():
+        return that
+    return d[key]
+
+
+def value_to_flag(value) -> bool:
+    """
+    Return False if the value was None, otherwise return wether it was in the list
+    of true values
+    """
+    if value is None:
+        return False
+
+    return value.lower() in ["1", "yes", "true", '']
 
 
 class Stream():
@@ -41,6 +69,7 @@ class Stream():
         self.password = None
         self.description = None
         self.unlisted = None
+        self.protected = None
 
     def __repr__(self):
         """
@@ -54,10 +83,11 @@ class Stream():
     def __str__(self) -> str:
         inactive = str_if_true(self.active, "inactive")
         unlisted = str_if_true(self.unlisted, "unlisted")
+        protected = str_if_true(self.protected, "protected")
         description = str_if_not_None(self.description, "with description")
         password = str_if_not_None(self.password, "password-protected")
 
-        attributes = [a for a in [unlisted, inactive, password, description] if a != ""]
+        attributes = [a for a in [protected, unlisted, inactive, password, description] if a != ""]
 
         if len(attributes) > 0:
             return "{} ({})".format(self.key, ", ".join(attributes))
@@ -94,6 +124,13 @@ class Stream():
         Set the stream to listed or unlisted (must not be set)
         """
         self.unlisted = unlisted
+        return self
+
+    def set_protected(self, protected: bool=True) -> 'Stream':
+        """
+        Set the stream to listed or protected (must not be set)
+        """
+        self.protected = protected
         return self
     
     def is_valid_password(self, password) -> bool:
@@ -204,6 +241,18 @@ class StreamList():
         """
         return [s for s in self.active_streams() if not s.unlisted]
 
+    def protected_streams(self) -> List['Stream']:
+        """
+        Return a list of protected streams
+        """
+        return [s for s in self.streams if s.protected]
+
+    def inactive_protected_streams(self) -> List['Stream']:
+        """
+        Return a list of inactive protected streams
+        """
+        return [s for s in self.streams if s.protected and not s.active]
+
     def json_list(self) -> str:
         return json.dumps(self.listed_streams(), default=jsonconverter, 
             sort_keys=True, indent=4)
@@ -226,6 +275,12 @@ class StreamList():
         """
         return any([s.key == stream.key for s in self.streams if not s.active])
 
+    def has_inactive_protected_stream(self, stream) -> bool:
+        """
+        Return True if a inactive protected stream of that name exists
+        """
+        return any([s.key == stream.key for s in self.streams if not s.active and s.protected])
+
     def get_stream(self, key) -> Optional['Stream']:
         """
         Returns None if no matching stream was found, 
@@ -244,9 +299,14 @@ class StreamList():
         for existing_stream in self.streams:
             if existing_stream.key == stream.key:
                 if existing_stream.is_valid_password(stream.password):
+                    if existing_stream.protected:
+                        stream.set_protected(True)
                     existing_stream = stream
                     self.logger.info("Replaced existing stream {} because a valid password was supplied".format(stream))
                     return True
+                elif existing_stream.protected:
+                    self.logger.info("Didn't accept new stream {}, because a existing stream is protected".format(stream))
+                    return False
                 elif not existing_stream.has_password_protection(self.password_protection_period):
                     self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
                     existing_stream = stream
@@ -273,9 +333,9 @@ class StreamList():
         Returns True if the stream was added, False otherwise
         """
 
-        # Check the number of active streams first
-        if len([s for s in self.streams if s.active]) >= self.max_streams:
-            self.logger.info("Not adding new stream \"{}\" because the maximum of {} active streams is reached".format(stream, self.max_streams))
+        # Check the number of active streams first (reserving space for the protected streams)
+        if len([s for s in self.streams if s.active]) - len(self.inactive_protected_streams()) >= self.max_streams:
+            self.logger.info("Not adding new stream \"{}\" because the maximum number of {} active streams is reached".format(stream, self.max_streams))
             return False
 
         # If the stream already exist check the password (if there is one) and
@@ -303,6 +363,10 @@ class StreamList():
             self.logger.debug("Tried to remove existing stream {}, but it was None? This should not happen.".format(key))
             return self
 
+        # If the existing stream is protected, deactivate it instead of removing it
+        if existing_stream.protected:
+            return self.deactivate_matching_stream(existing_stream)
+
         # Should there be no password protection or the period is over, remove the stream
         if existing_stream.password is None:
             self.streams = [s for s in self.streams if s.key != key]
@@ -319,9 +383,34 @@ class StreamList():
 
 
     def add_from_config(self, config) -> 'Streamlist':
+        """
+        Adds all streams from the config as protected/deactivated streams
+        This is a mechanism to permanently "reserve" certain stream keys
+        """
+        for stream in config["stream"]:
+            # Parse the values from the configs
+            name        = none_if_no_key_value_otherwise(stream, key="name")
+            password    = none_if_no_key_value_otherwise(stream, key="password")
+            description = none_if_no_key_value_otherwise(stream, key="description")
+            unlisted    = none_if_no_key_value_otherwise(stream, key="name")
+            unlisted = value_to_flag(unlisted)
 
-        self.logger.info("Predefined stream: {}".format(config["stream"]))
-        self.logger.info("Predefined stream: {}".format(config["stream"]["key"]))
+            # The only field that needs to be present is "name"
+            if name is None:
+                self.logger.warning("Found a stream in the configuration with no \"name\" defined!")
+                continue
+
+            # Construct a protected but deactivated stream with all other values
+            # coming from the config
+            protected_stream = Stream().set_key(name)\
+                                       .set_password(password)\
+                                       .set_description(description)\
+                                       .set_unlisted(unlisted)\
+                                       .set_protected(True)\
+                                       .deactivate()
+
+            # Add the new protected stream to the streamlist
+            self.add_stream(protected_stream)
 
         return self
 
