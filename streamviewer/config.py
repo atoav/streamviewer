@@ -17,7 +17,7 @@ APPLICATION_NAME = "streamviewer"
 DEFAULT_CONFIG = """
 [application]
 # Valid Log Levels are Debug, Info, Warning, Error, Critical
-loglevel = "Debug"
+loglevel = "Info"
 
 # Hostname, used to replace [[[HOSTNAME]]] in description.md if active
 hostname = "streams.example.com"
