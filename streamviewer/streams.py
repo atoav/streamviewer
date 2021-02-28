@@ -166,6 +166,7 @@ class Stream():
         """
         self.active = True
         self.deactivation_time = False
+        return self
 
     def inactive_since(self) -> Optional['Seconds']:
         """
