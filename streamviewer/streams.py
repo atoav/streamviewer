@@ -387,7 +387,7 @@ class StreamList():
         Adds all streams from the config as protected/deactivated streams
         This is a mechanism to permanently "reserve" certain stream keys
         """
-        for stream in config["stream"]:
+        for stream in config["stream"]["key"]:
             assert(type(stream), dict)
             self.logger.debug("Stream of type \"{}\" was {}".format(type(stream), stream))
             # Parse the values from the configs
