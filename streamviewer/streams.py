@@ -81,7 +81,7 @@ class Stream():
         return self.key == other.key
 
     def __str__(self) -> str:
-        inactive = str_if_true(self.active, "inactive")
+        inactive = str_if_true(self.inactive, "inactive")
         unlisted = str_if_true(self.unlisted, "unlisted")
         protected = str_if_true(self.protected, "protected")
         description = str_if_not_None(self.description, "with description")
@@ -96,6 +96,10 @@ class Stream():
     def to_json(self):
         return json.dumps(self, default=jsonconverter, 
             sort_keys=True, indent=4)
+
+    @property
+    def inactive(self) -> bool:
+        return not self.active
 
     def set_key(self, key) -> 'Stream':
         """
@@ -183,7 +187,7 @@ class Stream():
         Returns None if the Stream is inactive, otherwise return the seconds since
         creation
         """
-        if not self.active:
+        if self.inactive:
             return None
         delta = dt.datetime.now() - self.creation_time
         return delta.total_seconds()
@@ -265,7 +269,7 @@ class StreamList():
         """
         Return a list of inactive protected streams
         """
-        return [s for s in self.streams if s.protected and not s.active]
+        return [s for s in self.streams if s.protected and s.inactive]
 
     def json_list(self) -> str:
         return json.dumps(self.listed_streams(), default=jsonconverter, 
@@ -287,13 +291,13 @@ class StreamList():
         """
         Return True if a inactive stream of that name exists
         """
-        return any([s.key == stream.key for s in self.streams if not s.active])
+        return any([s.key == stream.key for s in self.streams if s.inactive])
 
     def has_inactive_protected_stream(self, stream) -> bool:
         """
         Return True if a inactive protected stream of that name exists
         """
-        return any([s.key == stream.key for s in self.streams if not s.active and s.protected])
+        return any([s.key == stream.key for s in self.streams if s.inactive and s.protected])
 
     def get_stream(self, key) -> Optional['Stream']:
         """
@@ -439,6 +443,8 @@ class StreamList():
                                        .set_unlisted(unlisted)\
                                        .set_protected(True)\
                                        .deactivate()
+
+            self.logger.debug("Stream looked like this: {}".format(protected_stream))
 
             # Add the new protected stream to the streamlist
             self.add_stream(protected_stream)
