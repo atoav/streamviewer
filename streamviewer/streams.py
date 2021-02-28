@@ -197,6 +197,7 @@ class StreamList():
         self.streams = []
         self.max_streams = None
         self.password_protection_period = 0
+        self.free_choice = False
         self.logger.debug("Created StreamList")
 
     def __iter__(self):
@@ -214,6 +215,18 @@ class StreamList():
         if n >= 0:
             self.max_streams = int(n)
             self.logger.debug("Set max_streams to {}".format(self.max_streams))
+        return self
+
+    def set_free_choice(self, free: bool=False) -> 'StreamList':
+        """
+        Sets the maximum number of streams allowed.
+        Streams that get added after this will not be accepted
+        """
+        self.free_choice = free
+        if self.free_choice:
+            self.logger.warning("Set free_choice to {} (this means everybody on the same net can stram to this service!)".format(self.free_choice))
+        else:
+            self.logger.warning("Set free_choice to {} (this means only streams listed in the config can be used)".format(self.free_choice))
         return self
 
     def set_password_protection_period(self, minutes: int) -> 'StreamList':
@@ -344,6 +357,11 @@ class StreamList():
             self.logger.debug("The new stream \"{}\" already exists in list".format(stream))
             return self.replace_matching_stream(stream)
 
+        # If the stream wasn't replaced above, and free choice doesn't exist, deny
+        if not self.free_choice:
+            self.logger.warning("Didn't add stream \"{}\" because it was not listed in the config (free choice of stream keys is disabled)".format(stream))
+            return False
+
         # If none of the above applies append the Stream to the list
         self.streams.append(stream)
         self.logger.info("Added new stream \"{}\" to list".format(stream))
@@ -382,7 +400,7 @@ class StreamList():
         return self.deactivate_matching_stream(existing_stream)
 
 
-    def add_from_config(self, config) -> 'Streamlist':
+    def add_streams_from_config(self, config) -> 'Streamlist':
         """
         Adds all streams from the config as protected/deactivated streams
         This is a mechanism to permanently "reserve" certain stream keys
