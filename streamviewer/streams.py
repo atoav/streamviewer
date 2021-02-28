@@ -366,7 +366,7 @@ class StreamList():
 
         # If the stream already exist check the password (if there is one) and
         # whether that password is still protective or not
-        if self.has_stream(stream):
+        if self.has_stream(stream) and stream.active:
             self.logger.debug("The new stream \"{}\" already exists in list".format(stream))
             return self.replace_matching_stream(stream)
 
