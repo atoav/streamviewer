@@ -65,11 +65,13 @@ function updateNoStreamsMessage(streams) {
       document.getElementById("no-stream-notice").remove();
     }
   }else{
-    // If there are no streams add a message
-    let h2 = document.createElement("h2");
-    h2.textContent = "There are currently no active streams"
-    h2.id = "no-stream-notice";
-    streams.appendChild(h2);
+    if (document.getElementById("no-stream-notice") !== null) { 
+      // If there are no streams add a message
+      let h2 = document.createElement("h2");
+      h2.textContent = "There are currently no active streams"
+      h2.id = "no-stream-notice";
+      streams.appendChild(h2);
+    }
   }
 }
 
