@@ -312,21 +312,18 @@ class StreamList():
         """
         for existing_stream in self.streams:
             if existing_stream.key == stream.key:
-                if existing_stream.is_valid_password(stream.password):
-                    if existing_stream.protected:
-                        stream = stream.set_protected(True).activate()
+                if existing_stream.protected and existing_stream.password is None:
+                    existing_stream = stream.set_protected(True).activate()
+                    self.logger.info("Replaced existing (protected) stream {}, because the protected stream has no password set".format(existing_stream))
+                    return True
+                elif existing_stream.protected and existing_stream.is_valid_password(stream.password):
+                    existing_stream = stream.set_protected(True).activate()
+                    self.logger.info("Replaced existing (protected) stream {}, because a valid password was supplied".format(existing_stream))
+                    return True
+                elif existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
-                    p = str_if_true(existing_stream.protected, "(protected) ")
                     self.logger.info("Replaced existing {}stream {} because a valid password was supplied".format(p, existing_stream))
                     return True
-                elif existing_stream.protected:
-                    if existing_stream.password is None:
-                        existing_stream = stream.set_protected(True).activate()
-                        self.logger.info("Replaced existing (protected) stream {}, because the protected stream has no password set".format(existing_stream))
-                        return True
-                    else:
-                        self.logger.info("Didn't accept new stream {}, because a existing stream is protected".format(stream))
-                        return False
                 elif not existing_stream.has_password_protection(self.password_protection_period):
                     self.logger.info("Replaced existing stream {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
                     existing_stream = stream
