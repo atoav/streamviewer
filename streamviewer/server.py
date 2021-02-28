@@ -7,7 +7,7 @@ import subprocess
 import humanize
 from flask import Flask, request, render_template, send_from_directory
 from flaskext.markdown import Markdown
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 
 from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
 from .streams import Stream, StreamList, value_to_flag
@@ -160,17 +160,40 @@ def on_publish_done():
 
 
 
-@socketio.on('client_connected')
-def client_connected(data):
+@socketio.on('connect_list')
+def client_list_connected():
     app.logger.info('Client connected via socket.io')
     json_list = streamlist.json_list()
     app.logger.debug('Sending JSON list {}'.format(json_list))
     socketio.emit('stream_list', {'list': json_list})
 
 
+@socketio.on('connect_single')
+def client_single_connected(data):
+    if data is not None:
+        app.logger.info('Client (single page > {}) connected via socket.io'.format(data))
+
+@socketio.on('stream_list')
+def send_streamlist():
+    json_list = streamlist.json_list()
+    socketio.emit('stream_list', {'list': json_list})
 
 
-    
+@socketio.on('join')
+def on_join(data):
+    app.logger.info('Client connected to stream {}'.format(data['key']))
+    key = data['key']
+    join_room(key)
+    count = streamlist.add_viewer(key)
+    socketio.emit('viewercount', {'count': count, 'direction': 'up'}, room=key)
+
+@socketio.on('leave')
+def on_leave(data):
+    app.logger.info('Client left to stream {}'.format(data['key']))
+    key = data['key']
+    leave_room(key)
+    count = streamlist.remove_viewer(key)
+    socketio.emit('viewercount', {'count': count, 'direction': 'down'}, room=key)
 
 if __name__ == '__main__':
     socketio.run(app)

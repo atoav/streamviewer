@@ -7,11 +7,14 @@
 
 {% block header %}
   <h1 id="page_title"><a href="/">{{ page_title }}</a>/<a href="/streams/{{ streamkey }}">{{ streamkey }}</a></h1>
-  <h1 id="running_since">{{running_since}}</h1>
+  <div id="viewers">
+    <img id="viewcount-eye" src="{{ url_for('static', filename='eye.svg') }}" />
+    <h2 id="viewcount"></h2> 
+  </div>
 {% endblock %}
 
 {% block content %}
-  <video-js id="stream" class="vjs-default-skin" data-setup='{"fluid": true, "liveui": true}' controls>
+  <video-js id="stream" class="vjs-default-skin stream-{{ streamkey }}" data-setup='{"fluid": true, "liveui": true}' controls>
       <source src="../hls/{{ streamkey }}.m3u8" type="application/x-mpegURL">
   </video-js>
   {% if description %}
@@ -27,10 +30,7 @@
     <script src="{{ url_for('static', filename='videojs-http-streaming.min.js') }}"></script>
     <script>
       var player = videojs('stream');
-      player.play();
       player.autoplay('any');
-   </script>
+    </script>
+    <script src="{{ url_for('static', filename='sync-stream.js') }}"></script>
 {% endblock %}
-
-
-

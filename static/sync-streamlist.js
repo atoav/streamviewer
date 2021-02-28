@@ -3,12 +3,11 @@ var socket = io();
 
 // Send a message to the server when the socket is established
 socket.on('connect', function() {
-    socket.emit();
+    socket.emit('connect_list');
 });
 
 // After initial connect, receive a streamlist
 socket.on('stream_list', function(data) {
-    console.log('Received stream list');
     var streamlist = JSON.parse(data["list"])
     updateStreamList(streamlist);
 });
@@ -26,6 +25,11 @@ socket.on('stream_removed', function(data) {
     var streamlist = JSON.parse(data["list"])
     updateStreamList(streamlist);
 });
+
+
+setInterval(function() {
+    socket.emit("stream_list");
+}, 4000)
 
 
 
@@ -62,10 +66,12 @@ function updateNoStreamsMessage(streams) {
   if (existingStreams.length > 0) {
     // If there are streams remove the "no streams"-message
     if (document.getElementById("no-stream-notice") !== null) { 
-      document.getElementById("no-stream-notice").remove();
+      document.querySelectorAll('#no-stream-notice').forEach(e => e.remove());
     }
   }else{
     if (document.getElementById("no-stream-notice") !== null) { 
+      // Make dead sure the notice doesn't exist yet
+      document.querySelectorAll('#no-stream-notice').forEach(e => e.remove());
       // If there are no streams add a message
       let h2 = document.createElement("h2");
       h2.textContent = "There are currently no active streams"
@@ -109,6 +115,31 @@ function addNewStreams(streams, streamlist) {
   }
 }
 
+function updateViewcounts(streams, streamlist) {
+  let active_streams = streams.querySelectorAll('.active_stream');
+  for (const li of active_streams) {
+    let key = extractStreamKey(li);
+    let match = streamlist.find(stream => stream.key === key);
+    if (li.querySelector(".viewcount") == null && match.viewcount != 0) {
+      let p = document.createElement("p");
+      let div = document.createElement("div");
+      div.classList.add("viewcount");
+      let img = document.createElement("img");
+      img.src = "/static/eye.svg";
+      p.textContent = match.viewcount;
+      div.appendChild(img);
+      div.appendChild(p);
+      li.appendChild(div);
+    } else {
+      if (match.viewcount != 0) {
+        li.querySelector(".viewcount p").textContent = match.viewcount;
+      } else {
+        li.querySelectorAll('.viewcount').forEach(e => e.remove());
+      }
+    }
+  }
+}
+
 
 // Remove streams after animation played and update the streamcount
 function removeAfterAnimation(streams, active_streams) {
@@ -145,6 +176,9 @@ function updateStreamList(streamlist) {
 
     // Update the count of streams displayed
     updateStreamCount(streams);
+
+    // Update the viewcounts next to the numbers
+    updateViewcounts(streams, streamlist);
   }
 
 }

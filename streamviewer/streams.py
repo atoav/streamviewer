@@ -70,6 +70,7 @@ class Stream():
         self.description = None
         self.unlisted = None
         self.protected = None
+        self.viewcount = 0
 
     def __repr__(self):
         """
@@ -309,6 +310,28 @@ class StreamList():
             return None
         return matches[0]
 
+    def add_viewer(self, key) -> int:
+        stream = self.get_stream(key)
+        if stream is not None:
+            stream.viewcount += 1
+            # Update the stream silently
+            for i, existing_stream in enumerate(self.streams):
+                if existing_stream.key == stream.key:
+                    self.streams[i] = stream
+            return stream.viewcount
+
+    def remove_viewer(self, key) -> int:
+        stream = self.get_stream(key)
+        if stream is not None:
+            stream.viewcount -= 1
+            if stream.viewcount <= 0:
+                stream.viewcount = 0
+            # Update the stream silently
+            for i, existing_stream in enumerate(self.streams):
+                if existing_stream.key == stream.key:
+                    self.streams[i] = stream
+            return stream.viewcount
+
     def replace_matching_stream(self, stream: 'Stream') -> bool:
         """
         Replace the first matching stream if the password is valid or the
@@ -332,7 +355,7 @@ class StreamList():
                 elif existing_stream.is_valid_password(stream.password):
                     existing_stream = stream
                     self.streams[i] = existing_stream
-                    self.logger.info("Replaced existing {}stream with {} because a valid password was supplied".format(p, existing_stream))
+                    self.logger.info("Replaced existing stream with {} because a valid password was supplied".format(existing_stream))
                     return True
                 elif not existing_stream.has_password_protection(self.password_protection_period):
                     self.logger.info("Replaced existing stream with {} because its password protection period is over ({}/{})".format(existing_stream, existing_stream.inactive_since(), self.password_protection_period))
