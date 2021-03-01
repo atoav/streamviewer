@@ -1,8 +1,26 @@
 # streamviewer
 
-Streamviewer is a python based web frontend that allows you to view HLS Streams received via NGINX-RTMP. This means users can stream to your server via RTMP, grab the RTMP-stream from there or view the stream on the website.
+Streamviewer is a python based web frontend that allows you to view HLS Streams received via NGINX-RTMP. This means users can stream to your server via RTMP, grab the RTMP-stream from there or view the stream live on the website.
 
-Streamviewer is (as of now) mostly stateless, that means there is not database, no accounts, nothing. Users can password protect their stream keys (by adding it to the RTMP URL like `?password=1234`) so others cannot snatch them away, but if the streamviewer service restarts the passwords are lost. This is because streamviewer was made to be used in a local network, where random users streaming undesireable content is not such a big danger.
+
+
+![](images/main_page.jpg)
+
+## Features
+
+- video.js based web players for live streams
+- builds on the nginx rtmp module
+- Shows a realtime list of ongoing streams with view counts
+- Allows unlisted streams, password protected streams, streams can provide descriptions to be displayed
+- Two modes: _free_ (everybody can stream to the server) and a _restricted_ mode (only preconfigured stream keys with password) are available
+- Optional Markdown based description can be added with instructions how to stream to the page
+- Based on Flask and python3 with minimum external dependecies
+
+![](images/stream_page.jpg)
+
+
+
+Streamviewer is (as of now) mostly stateless, that means there is not database, no accounts, nothing — but it still allows to display the current streams. Users can password protect their stream keys (by adding it to the RTMP URL like `?password=1234`) so others cannot snatch them away, but if the streamviewer service restarts the passwords are lost. This is because streamviewer was made to be used in a local network, where random users streaming undesireable content is not such a big danger.
 
 Maybe there will be a version with accounts (and LDAP support?) in the future, but who knows.
 
@@ -12,7 +30,12 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 - [ ] Finetuning of example HLS configuration
 - [ ] Add Footer with link to repo, contact info
 - [ ] Option ?start=2021-02-23T21.15 and display a countdown before showing the stream
-- [ ] Add socketio for single stream pages (to show realtime notices before streams started, after ended, duration of the stream, viewer count..?)
+- [ ] Hot reloading of config/description.md ?
+- [ ] Add socketio for single stream pages 
+  - [ ] show realtime notices before streams started
+  - [ ] after ended
+  - [ ] duration of the stream
+  - [x] viewer count
 - [x] Option to prevent unrestricted usage without preconfigured stream key/password
 - [x] Option to "protect" certain stream keys
 - [x] Option to have unlisted streams
@@ -87,7 +110,7 @@ include /etc/nginx/sites-enabled/*;
 
 ### 3. Create a reverse proxy configuration
 
-The create a site configuration at `/etc/nginx/sites-enabled/streamviewer` and set it up as a reverse proxy (see `/examples/streamviewer.conf` for a basic non-https setup)
+The create a site configuration at `/etc/nginx/sites-enabled/streamviewer.conf` and set it up as a reverse proxy (see `/examples/streamviewer.conf` for a basic non-https setup)
 
 Run `sudo nginx-t` to test your configuration, if everything is okay restart nginx with `sudo systemctl restart nginx`.
 
