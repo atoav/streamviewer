@@ -31,6 +31,7 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 
 ## Todo
 
+- [ ] Investigate switching to [nginx-http-flv-module](https://github.com/winshining/nginx-http-flv-module) mainly because it support rtmp domains
 - [ ] Design/Add Favicon
 - [ ] Recording of streams with recording listing/playback ?
 - [ ] Finetuning of example HLS configuration for lower latency
