@@ -27,6 +27,7 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 
 ## Todo
 
+- [ ] Design/Add Favicon
 - [ ] Finetuning of example HLS configuration
 - [ ] Add Footer with link to repo, contact info
 - [ ] Option ?start=2021-02-23T21.15 and display a countdown before showing the stream
