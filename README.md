@@ -16,6 +16,10 @@ Streamviewer is a python based web frontend that allows you to view HLS Streams 
 - Optional Markdown based description can be added with instructions how to stream to the page
 - Based on Flask and python3 with minimum external dependecies
 
+## Scope
+
+Streamviewer was built to be operated on a small scale, maybe even within the network of a single building (this is why the `free_choice` setting exists). So it doesn't aim to replace any social platform built around video streaming, but to be a self-hostable light weight alternative to commercial operators.
+
 ![](images/stream_page.jpg)
 
 
@@ -28,13 +32,14 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 ## Todo
 
 - [ ] Design/Add Favicon
-- [ ] Finetuning of example HLS configuration
-- [ ] Add Footer with link to repo, contact info
-- [ ] Option ?start=2021-02-23T21.15 and display a countdown before showing the stream
+- [ ] Recording of streams with recording listing/playback ?
+- [ ] Finetuning of example HLS configuration for lower latency
+- [ ] DASH integration (needs research)
+- [ ] Add customizable Footer with link to project, contact info
+- [ ] Option `?start=2021-02-23T21.15` and display a countdown before showing the stream
 - [ ] Hot reloading of config/description.md ?
 - [ ] Add socketio for single stream pages 
-  - [ ] show realtime notices before streams started
-  - [ ] after ended
+  - [ ] show notices before (protected) streams started and after streams ended
   - [ ] duration of the stream
   - [x] viewer count
 - [x] Option to prevent unrestricted usage without preconfigured stream key/password
