@@ -94,5 +94,5 @@ ffplay -fflags nobuffer rtmp://[[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]
 #### [3] Sink: omxplayer
 [omxplayer](https://www.raspberrypi.org/documentation/raspbian/applications/omxplayer.md) is preinstalled on every Raspberry Pi (if you use Raspbian). To output a stream to the HDMI Output of a Raspi use:
 ```
-omxplayer -o hdmi rtmp://[[[HOSTNAME]]].address:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test;
+omxplayer -o hdmi rtmp://[[[HOSTNAME]]]:[[[RTMP-PORT]]]/[[[RTMP-APP-NAME]]]/test
 ```
