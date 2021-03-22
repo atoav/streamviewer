@@ -120,7 +120,9 @@ function updateViewcounts(streams, streamlist) {
   for (const li of active_streams) {
     let key = extractStreamKey(li);
     let match = streamlist.find(stream => stream.key === key);
-    if (li.querySelector(".viewcount") == null && match.viewcount != 0) {
+    if (match === undefined) {
+      // Do nothing if stream gone
+    } else if (li.querySelector(".viewcount") == null && match.viewcount != 0) {
       let p = document.createElement("p");
       let div = document.createElement("div");
       div.classList.add("viewcount");
