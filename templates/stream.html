@@ -14,52 +14,30 @@
 {% endblock %}
 
 {% block content %}
-  <video-js id="stream" class="vjs-default-skin stream-{{ streamkey }}" data-setup='{"fluid": true, "liveui": true}' controls>
-      <source src="../hls/{{ streamkey }}.m3u8" type="application/x-mpegURL">
-  </video-js>
-  {% if description %}
-    <section class="description">
-        {{ description|markdown }}
-    </section>
+  {% if existed %}
+    <video-js id="stream" class="vjs-default-skin stream-{{ streamkey }}" data-setup='{"fluid": true, "liveui": true}' controls>
+        <source src="../hls/{{ streamkey }}.m3u8" type="application/x-mpegURL">
+    </video-js>
+    {% if description %}
+      <section class="description">
+          {{ description|markdown }}
+      </section>
+    {% endif %}
+  {% else %}
+    <div id="stream" class="stream-{{ streamkey }}">
+      <h2 class="stopped" id="no-stream-notice">The stream hasn't started yet (or it doesn't exist)</h2>
+    </div>
   {% endif %}
 {% endblock %}
 
 {% block footer %}
   {{ super() }}
+    {% if not existed %}
+    <script>
+      document.body.classList.add("inactive");
+    </script>
+    {% endif %}
     <script src="{{ url_for('static', filename='video.min.js') }}"></script>
     <script src="{{ url_for('static', filename='videojs-http-streaming.min.js') }}"></script>
-    <script>
-      let player = videojs('stream');
-      player.autoplay('any');
-
-      function displayMuteifNeeded(player) {
-        if (player.muted()){
-          let title = document.querySelector("#page_title");
-          if (title.querySelector(".muted") == null) {
-            let a = document.createElement("a");
-            let img = document.createElement("img");
-            img.src = "{{ url_for('static', filename='mute.svg') }}";
-            a.classList.add("muted");
-            a.onclick = function() { 
-              player.muted(false);
-              displayMuteifNeeded(player);
-            };
-            a.appendChild(img);
-            title.appendChild(a);
-          }
-        }else{
-          let title = document.querySelector("#page_title");
-          title.querySelectorAll('.muted').forEach(e => e.remove());
-        }
-      }
-
-      player.on('play', () => { 
-        displayMuteifNeeded(player);
-      });
-
-      player.on("volumechange",function(){
-        displayMuteifNeeded(player);
-      });
-    </script>
     <script src="{{ url_for('static', filename='sync-stream.js') }}"></script>
 {% endblock %}

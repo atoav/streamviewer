@@ -10,7 +10,7 @@ from flaskext.markdown import Markdown
 from flask_socketio import SocketIO, join_room, leave_room
 
 from .config import initialize_config, APPLICATION_NAME, DEFAULT_CONFIG
-from .streams import Stream, StreamList, value_to_flag
+from .streams import Stream, StreamList, value_to_flag, key_if_not_None
 
 
 # Initialization
@@ -67,17 +67,21 @@ def stream(streamkey):
     # Strip potential trailing slashes
     streamkey = streamkey.rstrip("/")
     stream = streamlist.get_stream(streamkey)
+    streamkey = key_if_not_None(stream, "key", that=streamkey)
+    description = key_if_not_None(stream, "description")
 
     # Render a different Template if the stream is missing
     if stream is None:
+        existed = False
         # Stream was Missing, log warning
-        app.logger.warning("Looking for stream {}, but it didn't exist".format(streamkey))
-        return render_template("stream_missing.html", application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], streamkey=streamkey, list_streams=config["application"]["list_streams"]), 404
+        running_since = None
+        app.logger.info("Client {} looked for non-existent stream {}".format(request.remote_addr, streamkey))
     else:
-        app.logger.debug("Looking for {}/{}.m3u8".format(config["application"]["hls_path"],  streamkey))
+        existed = True
+        app.logger.debug("Client requests stream {} ({}/{}.m3u8)".format(streamkey, config["application"]["hls_path"],  streamkey))
         running_since = humanize.naturaldelta(dt.timedelta(seconds=stream.active_since()))
         # Everything ok, return Stream
-        return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=stream.key, description=stream.description, running_since=running_since)
+    return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey, description=description, running_since=running_since, existed=existed)
 
 
 @app.route('/', methods = ['GET'])
@@ -168,15 +172,24 @@ def client_list_connected():
     socketio.emit('stream_list', {'list': json_list})
 
 
-@socketio.on('connect_single')
-def client_single_connected(data):
-    if data is not None:
-        app.logger.info('Client (single page > {}) connected via socket.io'.format(data))
-
 @socketio.on('stream_list')
 def send_streamlist():
     json_list = streamlist.json_list()
     socketio.emit('stream_list', {'list': json_list})
+
+
+@socketio.on('stream_info')
+def send_streaminfo(data):
+    if type(data) is dict and "key" in data.keys():
+        app.logger.info('Client wants info about stream {}'.format(data['key']))
+        key = data["key"]
+        stream = streamlist.get_stream(key)
+        if stream is not None:
+            json = stream.to_json()
+            app.logger.debug('Sending Stream info\n{}'.format(json))
+            socketio.emit('stream_info', json)
+        else:
+            app.logger.warning('Client {} asked for info on non-existing stream {}'.format(request.remote_addr, data['key']))
 
 
 @socketio.on('join')
@@ -187,6 +200,7 @@ def on_join(data):
     count = streamlist.add_viewer(key)
     socketio.emit('viewercount', {'count': count, 'direction': 'up'}, room=key)
 
+
 @socketio.on('leave')
 def on_leave(data):
     app.logger.info('Client left to stream {}'.format(data['key']))
@@ -194,6 +208,7 @@ def on_leave(data):
     leave_room(key)
     count = streamlist.remove_viewer(key)
     socketio.emit('viewercount', {'count': count, 'direction': 'down'}, room=key)
+
 
 if __name__ == '__main__':
     socketio.run(app)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python 
 #-*- coding: utf-8 -*-
 import json
+import copy
 from typing import Optional, NewType, List, Any
 import datetime as dt
 
@@ -36,6 +37,25 @@ def none_if_no_key_value_otherwise(d: dict, key: str, that=None) -> Optional[Any
     if not key in d.keys():
         return that
     return d[key]
+
+
+def key_if_not_None(o, key: str, that=None):
+    """
+    Return the object.key or object["key"] if it exists,
+    otherwise return that (per default None)
+    """
+    if o is None:
+        return that
+    elif type(o) is dict:
+        if key in o.keys():
+            return o[key]
+        else:
+            return that
+    else:
+        try:
+            return getattr(o, key)
+        except TypeError:
+            return that
 
 
 def value_to_flag(value) -> bool:
@@ -94,8 +114,19 @@ class Stream():
             return "{} ({})".format(self.key, ", ".join(attributes))
         return "{}".format(self.key)
 
+    def __iter__(self):
+        clone = copy.deepcopy(self)
+        del clone.protected
+        del clone.password
+        del clone.unlisted
+        for key in clone.__dict__:
+            yield key, getattr(clone, key)
+
+    def to_dict(self) -> dict:
+        return dict(self)
+
     def to_json(self):
-        return json.dumps(self, default=jsonconverter, 
+        return json.dumps(self.to_dict(), default=jsonconverter, 
             sort_keys=True, indent=4)
 
     @property
@@ -480,10 +511,12 @@ class StreamList():
         return self
 
 
-
-
 def jsonconverter(o):
-    if isinstance(o, dt.datetime):
+    o = copy.deepcopy(o)
+    if isinstance(o, Stream):
+        # We use to_dict() here, to keep fields like password private : )
+        return o.to_dict()
+    elif isinstance(o, dt.datetime):
         return o.__str__()
     else:
         return o.__dict__
