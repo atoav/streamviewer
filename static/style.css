@@ -245,6 +245,13 @@ header h1 a:not(:first-of-type) {
     margin-top: 24%;
 }
 
+body.inactive #stream{
+    background-color: black;
+    border: 1em solid black;
+    box-sizing: border-box;
+    min-height: 26em;
+}
+
 @keyframes slideInFromLeft {
   0% {
     transform: translateX(-100%);
