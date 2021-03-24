@@ -39,9 +39,9 @@ Maybe there will be a version with accounts (and LDAP support?) in the future, b
 - [ ] Add customizable Footer with link to project, contact info
 - [ ] Option `?start=2021-02-23T21.15` and display a countdown before showing the stream
 - [ ] Hot reloading of config/description.md ?
-- [ ] Add socketio for single stream pages 
-  - [ ] show notices before (protected) streams started and after streams ended
-  - [ ] duration of the stream
+- [x] Add socketio for single stream pages 
+  - [x] show notices before (protected) streams started and after streams ended
+  - [x] duration of the stream
   - [x] viewer count
 - [x] Option to prevent unrestricted usage without preconfigured stream key/password
 - [x] Option to "protect" certain stream keys
@@ -175,6 +175,18 @@ Streamviewer allows you to have multiple configuration files with a clear order 
 ```bash
 python3 streamviewer/config.py test
 ```
+
+### 3. Testing the installation
+
+To test if everything installed correctly you can run streamviewer using the flask debug server (do not use this for production) at port 5000 by executing:
+
+```
+export FLASK_APP=streamviewer/server.py
+flask run
+```
+
+If this looks normal, the right config is loaded, you can proceed with installing service.
+
 
 
 ### 3. Setup the service
