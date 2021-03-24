@@ -82,6 +82,7 @@ rtmp {
     server { 
         listen 1935; 
         chunk_size 4000;
+        notify_method post;
         application live { 
             live on; 
             interleave on;
