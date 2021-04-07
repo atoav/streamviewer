@@ -1,6 +1,9 @@
 var socket = io();
 let hasEverRun = false;
+var isPlaying = false;
 let player = null;
+
+
 
 // Extract foobar from the .stream-foobar key of an element
 function extractStreamKey(e) {
@@ -166,22 +169,24 @@ function deactivateStream(streamkey) {
 }
 
 function activateStream(stream) {
-    document.body.classList.remove("inactive");
-    document.body.classList.remove("not-started");
-    document.body.classList.remove("stopped");
+    if (!isPlaying) {
+        document.body.classList.remove("inactive");
+        document.body.classList.remove("not-started");
+        document.body.classList.remove("stopped");
 
-    // Remove div placeholder
-    if (document.getElementById("stream") !== null) { 
-      document.querySelectorAll('#stream').forEach(e => e.remove());
+        // Remove div placeholder
+        if (document.getElementById("stream") !== null) { 
+          document.querySelectorAll('#stream').forEach(e => e.remove());
+        }
+
+        // TODO: Add description, ...
+        addPlayer(stream.key);
+        player = initializePlayer();
+        player.load();
+        player.play();
+
+        updateDescription(stream);
     }
-
-    // TODO: Add description, ...
-    addPlayer(stream.key);
-    player = initializePlayer();
-    player.load();
-    player.play();
-
-    updateDescription(stream);
 }
 
 
@@ -304,6 +309,14 @@ function initializePlayer() {
 
     player.on("volumechange",function(){
         displayMuteifNeeded(player);
+    });
+
+    player.on(['waiting', 'pause'], function() {
+      isPlaying = false;
+    });
+
+    player.on('playing', function() {
+      isPlaying = true;
     });
 
     // player.on('error', () => {
