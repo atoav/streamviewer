@@ -76,11 +76,16 @@ def stream(streamkey):
         # Stream was Missing, log warning
         running_since = None
         app.logger.info("Client {} looked for non-existent stream {}".format(request.remote_addr, streamkey))
-    else:
+    elif stream.active_since() is not None:
         existed = True
         app.logger.debug("Client requests stream {} ({}/{}.m3u8)".format(streamkey, config["application"]["hls_path"],  streamkey))
         running_since = humanize.naturaldelta(dt.timedelta(seconds=stream.active_since()))
         # Everything ok, return Stream
+    else:
+        # stream is broken in a different way, also server the not found/not started page
+        running_since = None
+        existed = False
+        app.logger.info("Client {} looked for non-existent stream {}".format(request.remote_addr, streamkey))
     return render_template('stream.html', application_name=APPLICATION_NAME, page_title=config["application"]["page_title"], hls_path=config["application"]["hls_path"], streamkey=streamkey, description=description, running_since=running_since, existed=existed)
 
 
